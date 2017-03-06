@@ -1,0 +1,33 @@
+{% extends 'Next/base.html' %}
+
+{% block title %}{{_("Login")}} - {{super()}} {% endblock %}
+
+{% block content %}
+
+
+<form action="" method="post" accept-charset="utf-8" id="login">
+     <input type="hidden" name="do" value="login" />
+       <legend>Login</legend>
+<div class="col-sm-4 col-md-3 col-sm-offset-4">
+    <div class="form-group">
+      <label for="username">{{_('Username')}}</label>
+      <input type="text" class="form-control" id="username" size="20" name="username">
+    </div>
+    <div class="form-group">
+      <label for="password">{{_('Password')}}</label>
+      <input type="password" class="form-control" id="password" size="20" name="password">
+    </div>
+    <button type="submit" name="submit" value="Login" class="btn btn-default">{{_('Submit')}}</button>
+
+    </div>
+</form>
+<div>
+{% if errors %}
+<p>{{_("Your username and password didn't match. Please try again.")}}</p>
+  {{ _("To reset your login data or add an user run:") }} <b> python pyLoadCore.py -u</b>
+{% endif %}
+
+</div>
+<br>
+
+{% endblock %}
