@@ -1,7 +1,7 @@
 {% autoescape true %}
-var LoadJsonToContent, clear_captcha, humanFileSize, load_captcha, on_captcha_click, parseUri, root, set_captcha, submit_captcha;
+var root;
 root = this;
-humanFileSize = function(f) {
+function humanFileSize(f) {
     var c, d, e, b;
     d = new Array("B", "KiB", "MiB", "GiB", "TiB", "PiB");
     b = Math.log(f) / Math.log(1024);
@@ -13,7 +13,7 @@ humanFileSize = function(f) {
         return Math.round(f * 100 / c) / 100 + " " + d[e]
     }
 };
-parseUri = function() {
+function parseUri() {
     var b, c, g, e, d, f, a;
     b = $("add_links").value;
     g = new RegExp("(ht|f)tp(s?)://[a-zA-Z0-9-./?=_&%#]+[<| |\"|'|\r|\n|\t]{1}", "g");
@@ -134,7 +134,7 @@ document.addEvent("domready", function() {
         limit: 3000
     }).startTimer()
 });
-LoadJsonToContent = function(a) {
+function LoadJsonToContent(a) {
     $("speed").set("text", humanFileSize(a.speed) + "/s");
     $("aktiv").set("text", a.active);
     $("aktiv_from").set("text", a.queue);
@@ -165,7 +165,7 @@ LoadJsonToContent = function(a) {
     }
     return null
 };
-set_captcha = function(a) {
+function set_captcha(a) {
     $("cap_id").set("value", a.id);
     if (a.result_type === "textual") {
         $("cap_textual_img").set("src", a.src);
@@ -182,34 +182,35 @@ set_captcha = function(a) {
         }
     }
 };
-load_captcha = function(b, a) {
+function load_captcha(b, a) {
     return new Request.JSON({
         url: "/json/set_captcha",
         onSuccess: function(c) {
-            return set_captcha(c)(c.captcha ? void 0 : clear_captcha())
+            (c.captcha ? void 0 : clear_captcha());
+            return set_captcha(c);
         },
         secure: false,
         async: true,
         method: b
     }).send(a)
 };
-clear_captcha = function() {
+function clear_captcha() {
     $("cap_textual").setStyle("display", "none");
     $("cap_textual_img").set("src", "");
     $("cap_positional").setStyle("display", "none");
     $("cap_positional_img").set("src", "");
     return $("cap_title").set("text", '{{_("No Captchas to read.")}}')
 };
-submit_captcha = function() {
+function submit_captcha() {
     load_captcha("post", "cap_id=" + $("cap_id").get("value") + "&cap_result=" + $("cap_result").get("value"));
     $("cap_result").set("value", "");
     return false
 };
-on_captcha_click = function(c) {
+function on_captcha_click(c) {
     var b, a, d;
     b = c.target.getPosition();
-    a = c.page.x - b.x;
-    d = c.page.y - b.y;
+    a = (c.page.x - b.x).toFixed(0);
+    d = (c.page.y - b.y).toFixed(0);
     $("cap_result").value = a + "," + d;
     return submit_captcha()
 }; 
