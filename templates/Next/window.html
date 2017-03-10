@@ -7,35 +7,32 @@
 <div class="form-group">
     <label for="add_name">{{_("Name")}}</label>
     <input id="add_name" class="form-control" name="add_name" type="text" />
-    <p class="help-block">{{_("The name of the new package.")}}</p>
   </div>
   <div class="form-group">
     <label for="add_links">{{_("Links")}}</label>
- </div>
- <div>
- <textarea class="form-control" rows="5" style="width: 100%" name="add_links" id="add_links"></textarea>
-</div>
-<div class="form-group">
-    <p class="help-block">{{_("The name of the new package.")}} {{ _("Filter urls") }} <span class=" glyphicon glyphicon-filter" onclick="parseUri()"></span></p>
+    <textarea class="form-control" rows="4" style="width: 100%" name="add_links" id="add_links"></textarea>
   </div>
   <div class="form-group">
     <label for="add_password">{{_("Password")}}</label>
     <input id="add_password" class="form-control" name="add_password" type="text">
-    <p class="help-block">{{_("Password for RAR-Archive")}}</p>
+  </div>
+    <!--input class="file" type="file" name="add_file" id="add_file"/-->
+  <div class="form-group">
+  <label for="add_file">{{_("Upload a container.")}}</label> <p> 
+  <label class="btn btn-primary" for="add_file" style="padding: 0 10%;">
+    <input name="add_file" id="add_file" type="file" style="display:none;" onchange="$('upload-file-info').set('text', $(this).get('value'));">
+    {{_("File")}}
+  </label>
+  <span id="upload-file-info">{{_("not available")}}</span>
   </div>
   <div class="form-group">
-    <label>{{_("File")}}</label>
-    <input type="file" name="add_file" id="add_file"/>
-    <p class="help-block">{{_("Upload a container.")}}</p>
-  </div>
-  <div class="form-group">
-    <label for="add_dest">{{_("Destination")}}</label>
-    <span class="cont">
-        {{_("Queue")}}
-        <input type="radio" name="add_dest" id="add_dest" value="1" checked="checked"/>
-        {{_("Collector")}}
-        <input type="radio" name="add_dest" id="add_dest2" value="0"/>
-    </span>
+    <label for="add_dest">{{_("Destination")}} </label> 
+       <div class="radio">
+        <label><input type="radio" name="add_dest" id="add_dest" value="1" checked="checked"/>{{_("Queue")}}</label>
+       </div>
+       <div class="radio">      
+        <label><input type="radio" name="add_dest" id="add_dest2" value="0"/>{{_("Collector")}}</label>
+       </div>        
   </div>
   <button type="submit" class="btn btn-primary" style="float: right; margin-right: 5px;">{{_("Add Package")}}</button>
   <button id="add_reset" class="btn btn-default" style="float: right; margin-right: 5px;" type="reset">{{_("Reset")}}</button>
