@@ -186,8 +186,8 @@ function load_captcha(b, a) {
     return new Request.JSON({
         url: "/json/set_captcha",
         onSuccess: function(c) {
-            (c.captcha ? void 0 : clear_captcha());
-            return set_captcha(c);
+            set_captcha(c);
+            return (c.captcha ? void 0 : clear_captcha());
         },
         secure: false,
         async: true,
@@ -199,6 +199,7 @@ function clear_captcha() {
     $("cap_textual_img").set("src", "");
     $("cap_positional").setStyle("display", "none");
     $("cap_positional_img").set("src", "");
+    $("cap_submit").setStyle("display", "none");
     return $("cap_title").set("text", '{{_("No Captchas to read.")}}')
 };
 function submit_captcha() {
