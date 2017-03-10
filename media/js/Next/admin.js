@@ -45,26 +45,45 @@ window.addEvent("domready", function() {
             return root.passwordDialog.open()
         })
     }
-    $("quit-pyload").addEvent("click", function(g) {
-        new MooDialog.Confirm("{{_('You are really sure you want to quit pyLoad?')}}", function() {
+    $("quit-pyload").addEvent("click", function(x) {
+        root.QuitDialog = new MooDialog({
+            destroyOnHide: false
+        });
+        root.QuitDialog.setContent($("quit_box"));
+        $("quit_reset").addEvent("click", function(y) {
+            return root.QuitDialog.close()
+        });
+        $("quit_button").addEvent("click", function(z) {
             return new Request.JSON({
                 url: "/api/kill",
-                method: "get"
-            }).send()
-        }, function() {});
-        return g.stop()
+                method: "get",
+                onSuccess: function() {
+                    return root.QuitDialog.close();
+                }
+            }).send();
+        });
+        root.QuitDialog.open();
     });
+
     return $("restart-pyload").addEvent("click", function(g) {
-        new MooDialog.Confirm("{{_('Are you sure you want to restart pyLoad?')}}", function() {
+        root.RestartDialog = new MooDialog({
+            destroyOnHide: false
+        });
+        root.RestartDialog.setContent($("restart_box"));
+        $("restart_reset").addEvent("click", function(h) {
+            return root.RestartDialog.close()
+        });
+        $("restart_button").addEvent("click", function(j) {
             return new Request.JSON({
                 url: "/api/restart",
                 method: "get",
-                onSuccess: function(h) {
-                    return alert("{{_('pyLoad restarted')}}")
+                onSuccess: function() {
+                    alert("{{_('pyLoad restarted')}}");
+                    return root.RestartDialog.close();
                 }
-            }).send()
-        }, function() {});
-        return g.stop()
-    })
+            }).send();
+        });
+        root.RestartDialog.open();
+    });
 }); 
 {% endautoescape %}

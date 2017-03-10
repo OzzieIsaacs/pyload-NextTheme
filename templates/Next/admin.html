@@ -63,12 +63,11 @@
     </form>
 {% endblock %}
 {% block hidden %}
-    <div id="password_box" style="z-index: 2">
+<div id="password_box" style="z-index: 2">
         <form id="password_form" class="from-group" action="/json/change_password" method="POST" enctype="multipart/form-data">
             <h3>{{ _("Change Password") }}</h3>
             <p>{{ _("Enter your current and desired Password.") }}</p>
-
-<div class="form-group">
+      <div class="form-group">
     <label for="user_login">{{ _("User") }}</label>
     <input class="form-control" id="user_login" name="user_login" type="text"/>
     <p class="help-block">{{ _("Your username.") }}</p>
@@ -89,12 +88,22 @@
         <p class="help-block">{{ _("Please repeat the new password.") }}</p>
   </div>
 
-
-
             <button class="btn btn-primary" id="login_password_button" type="submit" style="float: right">{{ _("Submit") }}</button>
             <button class="btn btn-default" id="login_password_reset" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
             <div class="spacer"></div>
         </form>
+</div>
+<div id="restart_box" style="z-index: 2">
+      <p id="restart_title">{{_('Are you sure you want to restart pyLoad?')}}</p>
+      <button class="btn btn-primary" id="restart_button" type="submit" style="float: right">{{ _("Submit") }}</button>
+      <button class="btn btn-default" id="restart_reset" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
+      <div class="spacer"></div>
+</div>
+<div id="quit_box" style="z-index: 2">
+      <p id="restart_title">{{_('You are really sure you want to quit pyLoad?')}}</p>
+      <button class="btn btn-primary" id="quit_button" type="submit" style="float: right">{{ _("Submit") }}</button>
+      <button class="btn btn-default" id="quit_reset" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
+      <div class="spacer"></div>
+</div>
 
-    </div>
 {% endblock %}
