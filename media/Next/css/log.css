@@ -9,7 +9,6 @@ html, body, #content
 }
 .logdiv
 {
-    height: 90%;
     width: 100%;
     overflow: auto;
     border: 2px solid #CCC;
