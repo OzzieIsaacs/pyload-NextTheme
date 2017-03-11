@@ -6,6 +6,10 @@
     clear: both;
 }
 
+hr {
+    border-top: 0px;
+}
+
 .breakWords {
     word-wrap: break-word;
 }
