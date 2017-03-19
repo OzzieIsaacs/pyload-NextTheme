@@ -122,7 +122,7 @@ var LinkEntry = new Class({
                 }),
                 statusspan: new Element('span', {
                 'html': item.statusmsg,
-                'class': 'label label-default',
+                'class': 'label label-primary',
                         'styles':{
 
                         }
@@ -156,7 +156,7 @@ var LinkEntry = new Class({
                 }),
                 progress: new Element('div', {
                 'html':'',
-                'class':'progress',
+                'class':'progressani aqua',
                         'styles':{
                             'margin-bottom': '0px',
                         }
@@ -167,7 +167,7 @@ var LinkEntry = new Class({
                 'role':'progress',
                 'styles':{
                     'width': item.percent+'%',
-                    'background-color': '#ddd'
+                    // 'background-color': '#ddd'
                 }
                 })
 
@@ -200,13 +200,13 @@ var LinkEntry = new Class({
                 this.elements.info.set('text', item.info);
                 this.elements.bleft.set('text', item.format_size);
                 this.elements.percent.set('text', item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
-                if (item.statusmsg == "waiting") {
+                if (item.status == 5) {
                         this.elements.statusspan.set('class', 'label label-warning')
-                } else if (item.statusmsg == "starting") {
+                } else if (item.status == 7) {
                         this.elements.statusspan.set('class', 'label label-info')
-                } else if (item.statusmsg == "downloading") {
+                } else if (item.status == 12) {
                         this.elements.statusspan.set('class', 'label label-success')
-                } else if (item.stausmsg == "extracting") {
+                } else if (item.staus == 9) {
                         this.elements.statusspan.set('class', 'label label-primary')
                 } else {
                         this.elements.statusspan.set('class', 'label label-default')
@@ -216,7 +216,7 @@ var LinkEntry = new Class({
 
                     this.bar.start({
                         'width': item.percent,
-                        'background-color': [Math.round(120/100*item.percent),80,70].hsbToRgb().rgbToHex()
+                        // 'background-color': [Math.round(120/100*item.percent),80,70].hsbToRgb().rgbToHex()
                     });
                 }
                 else
@@ -225,7 +225,7 @@ var LinkEntry = new Class({
                         'styles', {
                             'height': '4px',
                             'width': item.percent+'%',
-                            'background-color': [Math.round(50/200*item.percent),0,200].hsbToRgb().rgbToHex(),
+                            // 'background-color': [Math.round(50/200*item.percent),0,200].hsbToRgb().rgbToHex(),
                          });
                 }
 
