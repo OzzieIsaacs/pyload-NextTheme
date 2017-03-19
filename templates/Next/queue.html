@@ -53,9 +53,8 @@ document.addEvent("domready", function(){
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
 
     <div id="progress" class="progress col-xs-4 col-sm-4 noPadding" style="margin-top: -5px; color:#fff; font-weight: 700; font-size:12px;">
-        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1; text-align:left;">
-            <label style="padding-left:10px; color: #000;">{{ package.linksdone }} / {{ package.linkstotal }}</label>
-        </div>
+        <label style="padding-left:10px; line-height: 20px; color: #000;">{{ package.linksdone }} / {{ package.linkstotal }}</label>
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1; text-align:left;"> </div>
         <label class="hidden-xs" style="line-height: 20px; right: 30px; position: absolute; z-index: 2; color:#000;">
             {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
         </div>

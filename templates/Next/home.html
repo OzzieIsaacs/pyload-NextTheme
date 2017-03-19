@@ -10,6 +10,21 @@ document.addEvent("domready", function(){
     em = new EntryManager();
 });
 
+function labelcolor(color)
+{
+    if (color == 5) {
+            return 'label-warning';
+    } else if (color == 7) {
+            return 'label-info';
+    } else if (color == 12) {
+            return 'label-success';
+    } else if (color == 9) {
+            return 'label-primary';
+    } else {
+            return 'label-default';
+    }
+}
+
 var EntryManager = new Class({
     initialize: function(){
         this.json = new Request.JSON({
@@ -107,8 +122,6 @@ var LinkEntry = new Class({
         insert: function(item){
             try{
 
-
-
             this.elements = {
                 tr: new Element('tr', {
                 'html': '',
@@ -122,9 +135,8 @@ var LinkEntry = new Class({
                 }),
                 statusspan: new Element('span', {
                 'html': item.statusmsg,
-                'class': 'label label-primary',
+                'class': 'label '+ labelcolor(item.status),
                         'styles':{
-
                         }
                 }),
                 name: new Element('td', {
@@ -200,17 +212,7 @@ var LinkEntry = new Class({
                 this.elements.info.set('text', item.info);
                 this.elements.bleft.set('text', item.format_size);
                 this.elements.percent.set('text', item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
-                if (item.status == 5) {
-                        this.elements.statusspan.set('class', 'label label-warning')
-                } else if (item.status == 7) {
-                        this.elements.statusspan.set('class', 'label label-info')
-                } else if (item.status == 12) {
-                        this.elements.statusspan.set('class', 'label label-success')
-                } else if (item.staus == 9) {
-                        this.elements.statusspan.set('class', 'label label-primary')
-                } else {
-                        this.elements.statusspan.set('class', 'label label-default')
-                }
+                this.elements.statusspan.set('class', 'label '+labelcolor(item.status))
                 if(!operafix)
                 {
 
