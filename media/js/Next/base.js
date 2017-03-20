@@ -1,5 +1,6 @@
 {% autoescape true %}
 var root;
+var Captchalert;
 root = this;
 function humanFileSize(f) {
     var c, d, e, b;
@@ -68,10 +69,6 @@ document.addEvent("domready", function() {
         mode: "top",
         position: "center"
     });
-    root.captchaBox = new MooDialog({
-        destroyOnHide: false
-    });
-    root.captchaBox.setContent($("cap_box"));
     root.addBox = new MooDialog({
         destroyOnHide: false,
         closeOnOverlayClick: false
@@ -113,11 +110,8 @@ document.addEvent("domready", function() {
         }).send()
     });
     $("cap_info").addEvent("click", function() {
+        Captchalert.hidden=true;
         load_captcha("get", "");
-        return root.captchaBox.open()
-    });
-    $("cap_reset").addEvent("click", function() {
-        return root.captchaBox.close()
     });
     $("cap_form").addEvent("submit", function(a) {
         submit_captcha();
@@ -142,7 +136,7 @@ function LoadJsonToContent(a) {
     if (a.captcha) {
         if ($("cap_info").getStyle("display") !== "inline") {
             $("cap_info").setStyle("display", "inline");
-            root.notify.alert('{{_("New Captcha Request")}}', {
+            Captchalert=root.notify.alert('{{_("New Captcha Request")}}', {
                 className: "notify"
             })
         }
@@ -169,14 +163,14 @@ function set_captcha(a) {
     $("cap_id").set("value", a.id);
     if (a.result_type === "textual") {
         $("cap_textual_img").set("src", a.src);
-        $("cap_title").set("text", '{{_("Please read the text on the captcha.")}}');
+        //$("cap_title").set("text", '{{_("Please read the text on the captcha.")}}');
         $("cap_submit").setStyle("display", "inline");
         $("cap_textual").setStyle("display", "block");
         return $("cap_positional").setStyle("display", "none")
     } else {
         if (a.result_type === "positional") {
             $("cap_positional_img").set("src", a.src);
-            $("cap_title").set("text", '{{_("Please click on the right captcha position.")}}');
+            //$("cap_title").set("text", '{{_("Please click on the right captcha position.")}}');
             $("cap_submit").setStyle("display", "none");
             return $("cap_textual").setStyle("display", "none")
         }

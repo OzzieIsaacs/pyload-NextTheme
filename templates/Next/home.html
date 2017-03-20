@@ -143,15 +143,15 @@ var LinkEntry = new Class({
                 'html': item.name
                 }),
                 info: new Element('td', {
-                'html': item.info,
-                'class': 'hidden-xs'
+                'html': item.info
                 }),
                 bleft: new Element('td', {
                 'html': humanFileSize(item.size),
                 'class': 'hidden-xs'
                 }),
                 percent: new Element('span', {
-                'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
+                'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft),
+                'class': 'hidden-xs'
                 }),
                 remove: new Element('span',{
                 'html': '',
@@ -250,31 +250,12 @@ var LinkEntry = new Class({
   <tr class="header">
     <th class="hidden-xs">{{_("Status")}}</th>
     <th>{{_("Name")}}</th>
-    <th class="hidden-xs>">{{_("Information")}}</th>
+    <th>{{_("Information")}}</th>
     <th class="hidden-xs">{{_("Size")}}</th>
     <th class="hidden-xs">{{_("Progress")}}</th>
   </tr>
     </thead>
   <tbody id="LinksAktiv">
-
-  {% for link in content %}
-  <tr id="link_{{ link.id }}">
-          <td id="link_{{ link.id }}_status"><span  class="label label-{% if link.status == 'downloading' %}success{% endif %}{% if link.status == 'extracting' %}primary{% endif %}{% if link.status == 'starting' %}warning{% else %}default{% endif %}">{{ link.status }}</span></td>
-          <td id="link_{{ link.id }}_name">{{ link.name }}</td>
-          <td id="link_{{ link.id }}_info">{{ link.info }}</td>
-          <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
-    <td>
-        <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="/media/Next/img/control_cancel.png"/>
-    </td>
-  </tr>
-  <tr id="link_{{ link.id }}_pgb_tr">
-    <td colspan="5">
-        <div id="link_{{ link.id }}_pgb" class="progressBar" style="background-color: green; height:4px; width: {{ link.percent }}%;">&nbsp;</div>
-    </td>
-  </tr>
-  {% endfor %}
-
   </tbody>
 </table>
 {% endblock %}

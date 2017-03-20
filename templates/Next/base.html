@@ -129,7 +129,7 @@
 
 {% endif %}
 <span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
-<button id="action_add" type="button" class="btn btn-default col-xs-12 col-sm-auto"><span class="glyphicon glyphicon-barcode"></span><span> {{_("Captcha waiting")}}</span></button>
+<div id="action_add" class="btn btn-default col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" ><span class="glyphicon glyphicon-barcode"></span><span> {{_("Captcha waiting")}}</span></div>
 </span>
 
 
@@ -180,10 +180,10 @@
 
 <div style="display: none;">
     {% include "Next/window.html" %}
-    {% include "Next/captcha.html" %}
     {% block hidden %}
     {% endblock %}
 </div>
+{% include "Next/captcha.html" %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 </body>
 </html>
