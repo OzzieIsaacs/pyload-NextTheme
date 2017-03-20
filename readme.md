@@ -1,9 +1,9 @@
-##About
+## About
 
 This is an improved "Next Theme" for pyload. I found basic theme on this site: http://www.howto-blog.de/pyload-themes-installieren/
 I improved it a little bit to make it working on smaller devices like tablets and smartphones, and I'd like to share it with you.
 
-##Installation
+## Installation
 
 Stop your pyload Server
 
