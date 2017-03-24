@@ -7,10 +7,6 @@ var __bind = function(a, b) {
 };
 root = this;
 window.addEvent("domready", function() {
-    root.accountDialog = new MooDialog({
-        destroyOnHide: false
-    });
-    root.accountDialog.setContent($("account_box"));
     new TinyTab($$("#toptabs li"), $$("#tabs-body > span"));
     $$("ul.nav").each(function(a) {
         return new MooDropMenu(a, {

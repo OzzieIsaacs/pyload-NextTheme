@@ -71,36 +71,38 @@ document.addEvent("domready", function(){
 {% endautoescape %}
 {% endblock %}
 
-{% block hidden %}
-<div id="pack_box" style="z-index: 2">
-    <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data">
-    <h3>{{_("Edit Package")}}</h3>
-    <p>{{_("Edit the package detais below.")}}</p>
+{% block dialog %}
 
-    <input name="pack_id" id="pack_id" type="hidden" value=""/>
-
-    <div class="form-group">
-        <label for="pack_name">{{_("Name")}}</label>
-        <input class="form-control" id="pack_name" name="pack_name" type="text" />
-        <p class="help-block">{{_("The name of the package.")}}</p>
-    </div>
-    <div class="form-group">
-        <label for="pack_folder">{{_("Folder")}}</label>
-        <input class="form-control" id="pack_folder" name="pack_folder" type="text" />
-        <p class="help-block">{{_("Name of subfolder for these downloads.")}}</p>
-    </div>
-    <div class="form-group">
-        <label for="pack_pws">{{_("Password")}}</label>
-        <textarea class="form-control" style=" width: 100%;" rows="3" name="pack_pws" id="pack_pws"></textarea>
-        <p class="help-block">{{_("List of passwords used for unrar.")}}</p>
-    </div>
-    <button class="btn btn-primary" style="float: right; margin-left: 5px;" type="submit">{{_("Submit")}}</button>
-    <button  class="btn btn-default" id="pack_reset" style="float: right;" type="reset" >{{_("Reset")}}</button>
-
-
-    <div class="spacer"></div>
-
+<div id="pack_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_("Edit Package")}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+        <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_("Edit the package detais below.")}}</p>
+            <input name="pack_id" id="pack_id" type="hidden" value=""/>
+            <div class="form-group">
+                <label for="pack_name">{{_("Name")}}</label>
+                <input class="form-control" id="pack_name" name="pack_name" type="text" />
+                <p class="help-block">{{_("The name of the package.")}}</p>
+            </div>
+            <div class="form-group">
+                <label for="pack_folder">{{_("Folder")}}</label>
+                <input class="form-control" id="pack_folder" name="pack_folder" type="text" />
+                <p class="help-block">{{_("Name of subfolder for these downloads.")}}</p>
+            </div>
+            <div class="form-group">
+                <label for="pack_pws">{{_("Password")}}</label>
+                <textarea class="form-control" style=" width: 100%;" rows="3" name="pack_pws" id="pack_pws"></textarea>
+                <p class="help-block">{{_("List of passwords used for unrar.")}}</p>
+            </div>
+          <button class="btn btn-primary" type="submit" style="float: right">{{ _("Submit") }}</button>
+          <button class="btn btn-default" id="pack_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
     </form>
-
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}

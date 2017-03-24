@@ -177,11 +177,12 @@
 
 </div>
 
-
 <div style="display: none;">
     {% block hidden %}
     {% endblock %}
 </div>
+{% block dialog %}
+{% endblock %}
 {% include "Next/window.html" %}
 {% include "Next/captcha.html" %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>

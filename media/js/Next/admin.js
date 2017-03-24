@@ -3,13 +3,6 @@ var root;
 root = this;
 window.addEvent("domready", function() {
     var f, c, b, e, a, d;
-    /*root.passwordDialog = new MooDialog({
-        destroyOnHide: false
-    });
-    root.passwordDialog.setContent($("password_box"));
-    $("login_password_reset").addEvent("click", function(g) {
-        return root.passwordDialog.close()
-    });*/
     $("login_password_button").addEvent("click", function(j) {
         var h, i, g;
         i = $("login_new_password").get("value");
@@ -30,7 +23,6 @@ window.addEvent("domready", function() {
             });
             h.send();
             $$('#password_box')[0].hide();
-            //root.passwordDialog.close()
         } else {
             alert('{{_("Passwords did not match.")}}')
         }
@@ -42,9 +34,6 @@ window.addEvent("domready", function() {
         f = c.get("id");
         b = f.split("|")[1];
         $("user_login").set("value", b);
-        /*c.addEvent("click", function(g) {
-            return root.passwordDialog.open()
-        })*/
     }
     $("quit-pyload").addEvent("click", function(x) {
         $("quit_button").addEvent("click", function(z) {
