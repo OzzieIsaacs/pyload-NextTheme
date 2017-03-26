@@ -1,7 +1,7 @@
 {% autoescape true %}
-var root;
-var Captchalert;
-root = this;
+var element;
+//var Captchalert;
+//root = this;
 function humanFileSize(f) {
     var c, d, e, b;
     d = new Array("B", "KiB", "MiB", "GiB", "TiB", "PiB");
@@ -16,7 +16,7 @@ function humanFileSize(f) {
 };
 function parseUri() {
     var b, c, g, e, d, f, a;
-    b = $("add_links").value;
+    b = $("#add_links").value();
     g = new RegExp("(ht|f)tp(s?)://[a-zA-Z0-9-./?=_&%#]+[<| |\"|'|\r|\n|\t]{1}", "g");
     d = b.match(g);
     if (d === null) {
@@ -51,7 +51,7 @@ function parseUri() {
             }
         }
     }
-    return $("add_links").value = e
+    return $("#add_links").value = e
 };
 Array.prototype.remove = function(d, c) {
     var a, b;
@@ -64,115 +64,129 @@ Array.prototype.remove = function(d, c) {
     }
     return this.push.apply(this, a);
 };
-document.addEvent("domready", function() {
-    root.notify = new Purr({
-        mode: "top",
-        position: "center"
-    });
-    $("add_form").onsubmit = function() {
-        if ($("add_name").value === "" && $("add_file").value === "") {
+$(function() {
+    $("#add_form").submit(function(event) {
+        event.preventDefault();
+        if ($("#add_name").value === "" && $("#add_file").value === "") {
             alert('{{_("Please Enter a packagename.")}}');
             return false;
         } else {
-                    formData = new FormData(document.getElementById('add_form'));
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/json/add_package");
-                    request.send(formData);
-            // ToDo not 100% okay, afterwards double click is necessary
-            $$('#add_box')[0].hide();
+            var form = new FormData(this);
+            $.ajax({
+                    url: "/json/add_package",
+                    method: "POST",
+                    data: form,
+                    processData: false,
+                    contentType: false,
+            });
+            $('#add_box').modal('hide');
             return false;
         }
-    };
-    $("action_add").addEvent("click", function() {
-        $("add_form").reset();
     });
-    $("action_play").addEvent("click", function() {
-        return new Request({
-            method: "get",
-            url: "/api/unpauseServer"
-        }).send();
+    $("#action_add").click(function() {
+        $("#add_form").trigger("reset");
     });
-    $("action_cancel").addEvent("click", function() {
-        return new Request({
-            method: "get",
-            url: "/api/stopAllDownloads"
-        }).send();
+
+    $("#action_play").click(function() {
+        $.get( "/api/unpauseServer" );
     });
-    $("action_stop").addEvent("click", function() {
-        return new Request({
-            method: "get",
-            url: "/api/pauseServer"
-        }).send();
+
+    $("#action_cancel").click(function() {
+        $.get( "/api/stopAllDownloads" );
     });
-    $("cap_info").addEvent("click", function() {
-        Captchalert.hidden=true;
+
+    $("#action_stop").click(function() {
+        $.get( "/api/pauseServer" );
+    });
+
+    $("#cap_info").click(function() {
+        /*if (element)
+        {
+            element.hidden=true;
+        }*/
         load_captcha("get", "");
     });
-    $("cap_form").addEvent("submit", function(a) {
-        submit_captcha();
-        return a.stop();
+
+    $("#cap_submit").click(function() {
+            submit_captcha();
+        //return this.stop();
     });
-    $("cap_positional").addEvent("click", on_captcha_click);
-    return new Request.JSON({
-        url: "/json/status",
-        onSuccess: LoadJsonToContent,
-        secure: false,
-        async: true,
-        initialDelay: 0,
-        delay: 4000,
-        limit: 3000
-    }).startTimer();
+
+    $("#cap_positional").click(on_captcha_click);
+    setInterval(function() {
+        $.ajax({
+            method:"post",
+            url:"/json/status",
+            async: true,
+            timeout: 3000,
+            success:LoadJsonToContent
+        });
+    }, 4000);
 });
+
 function LoadJsonToContent(a) {
-    $("speed").set("text", humanFileSize(a.speed) + "/s");
-    $("aktiv").set("text", a.active);
-    $("aktiv_from").set("text", a.queue);
-    $("aktiv_total").set("text", a.total);
+    $("#speed").text(humanFileSize(a.speed) + "/s");
+    $("#aktiv").text( a.active);
+    $("#aktiv_from").text(a.queue);
+    $("#aktiv_total").text(a.total);
     if (a.captcha) {
-        if ($("cap_info").getStyle("display") !== "inline") {
-            $("cap_info").setStyle("display", "inline");
-            Captchalert=root.notify.alert('{{_("New Captcha Request")}}', {
-                className: "notify"
+        if ($("#cap_info").css("display") !== "inline") {
+            $("#cap_info").css('display','inline');
+            element=$.bootstrapPurr('{{_("New Captcha Request")}}',{
+                offset: { amount: 10},
+                align: 'center',
+                draggable: false
             });
         }
     } else {
-        $("cap_info").setStyle("display", "none");
+        $("#cap_info").css('display','none');
     }
     if (a.download) {
-        $("time").set("text", ' {{_("on")}}');
-        $("time").setStyle("background-color", "#5cb85c");
+        $("#time").text(' {{_("on")}}');
+        $("#time").css('background-color','#5cb85c');
     } else {
-        $("time").set("text", ' {{_("off")}}');
-        $("time").setStyle("background-color", "#d9534f");
+        $("#time").text(' {{_("off")}}');
+        $("#time").css('background-color',"#d9534f");
     }
     if (a.reconnect) {
-        $("reconnect").set("text", ' {{_("on")}}');
-        $("reconnect").setStyle("background-color", "#5cb85c");
+        $("#reconnect").text(' {{_("on")}}');
+        $("#reconnect").css('background-color',"#5cb85c");
     } else {
-        $("reconnect").set("text", ' {{_("off")}}');
-        $("reconnect").setStyle("background-color", "#d9534f");
+        $("#reconnect").text(' {{_("off")}}');
+        $("#reconnect").css('background-color',"#d9534f");
     }
     return null
 };
 function set_captcha(a) {
-    $("cap_id").set("value", a.id);
+    $("#cap_id").val(a.id);
     if (a.result_type === "textual") {
-        $("cap_textual_img").set("src", a.src);
-        $("cap_submit").setStyle("display", "inline");
-        $("cap_title").set("text", '');
-        $("cap_textual").setStyle("display", "block");
-        return $("cap_positional").setStyle("display", "none");
+        $("#cap_textual_img").attr("src", a.src);
+        $("#cap_submit").css("display", "inline");
+        $("#cap_title").text( '');
+        $("#cap_textual").css("display", "block");
+        return $("#cap_positional").css("display", "none");
     } else {
         if (a.result_type === "positional") {
-            $("cap_positional_img").set("src", a.src);
-            $("cap_title").set("text", '{{_("Please click on the right captcha position.")}}');
-            $("cap_submit").setStyle("display", "none");
-            return $("cap_textual").setStyle("display", "none");
+            $("#cap_positional_img").attr("src", a.src);
+            $("#cap_title").text( '{{_("Please click on the right captcha position.")}}');
+            $("#cap_submit").css("display", "none");
+            return $("#cap_textual").css("display", "none");
         }
     }
 };
 function load_captcha(b, a) {
-    return new Request.JSON({
+    $.ajax({
+            url: "/json/set_captcha",
+            async: true,
+            method: b,
+            data: a,
+            success: function(c) {
+                set_captcha(c);
+                return (c.captcha ? void 0 : clear_captcha());
+        }
+    });
+
+    /*return new Request.JSON({
         url: "/json/set_captcha",
         onSuccess: function(c) {
             set_captcha(c);
@@ -181,20 +195,20 @@ function load_captcha(b, a) {
         secure: false,
         async: true,
         method: b
-    }).send(a)
+    }).send(a)*/
 };
 
 function clear_captcha() {
-    $("cap_textual").setStyle("display", "none");
-    $("cap_textual_img").set("src", "");
-    $("cap_positional").setStyle("display", "none");
-    $("cap_positional_img").set("src", "");
-    $("cap_submit").setStyle("display", "none");
-    $("cap_title").set("text", '{{_("No Captchas to read.")}}');
+    $("#cap_textual").css("display", "none");
+    $("#cap_textual_img").attr("src", "");
+    $("#cap_positional").css("display", "none");
+    $("#cap_positional_img").attr("src", "");
+    $("#cap_submit").css("display", "none");
+    $("#cap_title").text( '{{_("No Captchas to read.")}}');
 };
 function submit_captcha() {
-    load_captcha("post", "cap_id=" + $("cap_id").get("value") + "&cap_result=" + $("cap_result").get("value"));
-    $("cap_result").set("value", "");
+    load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
+    $("#cap_result").val("");
     return false;
 };
 function on_captcha_click(c) {
@@ -202,7 +216,7 @@ function on_captcha_click(c) {
     b = c.target.getPosition();
     a = (c.page.x - b.x).toFixed(0);
     d = (c.page.y - b.y).toFixed(0);
-    $("cap_result").value = a + "," + d;
+    $("#cap_result").value(a + "," + d);
     return submit_captcha();
 }; 
 {% endautoescape %}

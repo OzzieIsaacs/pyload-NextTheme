@@ -1,126 +1,111 @@
 {% autoescape true %}
 var SettingsUI, root;
-var __bind = function(a, b) {
-    return function() {
-        return a.apply(b, arguments)
-    }
-};
 root = this;
-window.addEvent("domready", function() {
-    new TinyTab($$("#toptabs li"), $$("#tabs-body > span"));
-    $$("ul.nav").each(function(a) {
-        return new MooDropMenu(a, {
-            onOpen: function(b) {
-                return b.fade("in")
-            },
-            onClose: function(b) {
-                return b.fade("out")
-            },
-            onInitialize: function(b) {
-                return b.fade("show").set("tween", {
-                    duration: 500
-                })
-            }
-        })
-    });
-    return new SettingsUI()
+
+$(function() {
+    return new SettingsUI();
 });
+
 SettingsUI = (function() {
     function a() {
         var c, e, b, d;
-        this.menu = $$("#general-menu li");
-        this.menu.append($$("#plugin-menu li"));
-        this.name = $("tabsback");
-        this.general = $("general_form_content");
-        this.plugin = $("plugin_form_content");
-        d = this.menu;
-        for (e = 0, b = d.length; e < b; e++) {
-            c = d[e];
-            c.addEvent("click", this.menuClick.bind(this))
-        }
-        $("general|submit").addEvent("click", this.configSubmit.bind(this));
-        $("plugin|submit").addEvent("click", this.configSubmit.bind(this));
-        $("account_add").addEvent("click", function(f) {
-            root.accountDialog.open();
-            return f.stop()
+        general = $("#general_form_content");
+        plugin = $("#plugin_form_content");
+        thisObject=this;
+        $("#general-menu").find("li").each(function(a) {
+            $(this).click(thisObject.menuClick);
         });
-        $("account_reset").addEvent("click", function(f) {
-            return root.accountDialog.close()
+        $("#plugin-menu").find("li").each(function(a) {
+            $(this).click(thisObject.menuClick);
         });
-        $("account_add_button").addEvent("click", this.addAccount.bind(this));
-        $("account_submit").addEvent("click", this.submitAccounts.bind(this))
+
+        $("#general_submit").click(this.configSubmit);
+        $("#plugin_submit").click(this.configSubmit);
+        $("#account_add").click(function(f) {
+            $("#account_box").modal('show');
+            f.stopPropagation();
+            f.preventDefault();
+        });
+        $("#account_add_button").click( this.addAccount);
+        $("#account_submit").click( this.submitAccounts);
     }
     a.prototype.menuClick = function(h) {
         var c, b, g, f, d;
-        d = h.target.get("id").split("|"), c = d[0], g = d[1];
-        b = h.target.get("text");
-        f = c === "general" ? this.general : this.plugin;
-        f.dissolve();
-        return new Request({
-            method: "get",
-            url: "/json/load_config/" + c + "/" + g,
-            onSuccess: __bind(function(e) {
-                f.set("html", e);
-                f.reveal();
-                return this.name.set("text", b)
-            }, this)
-        }).send()
-    };
+        d = $(this).attr('id').split("|"), c = d[0], g = d[1];
+        b = $(this).text();
+        f = c === "general" ? general : plugin;
+        $.get( "/json/load_config/" + c + "/" + g, function(e) {
+                f.html(e);
+            });
+    }
     a.prototype.configSubmit = function(d) {
         var c, b;
-        c = d.target.get("id").split("|")[0];
-        b = $("" + c + "_form");
-        b.set("send", {
-            method: "post",
-            url: "/json/save_config/" + c,
-            onSuccess: function() {
-                return root.notify.alert('{{ _("Settings saved.")}}', {
-                    className: "success"
-                })
-            },
-            onFailure: function() {
-                return root.notify.alert('{{ _("Error occured.")}}', {
-                    className: "error"
-                })
-            }
-        });
-        b.send();
-        return d.stop()
-    };
+        c = $(this).attr("id").split("_")[0];
+        $.ajax({
+            method:"post",
+            url:"/json/save_config/" + c,
+            data: $("#" + c + "_form").serialize(),
+            async: true,
+            success: function() {
+                $.bootstrapPurr('{{ _("Settings saved.")}}',{
+                    offset: { amount: 10},
+                    type: 'success',
+                    align: 'center',
+                    draggable: false
+                });
+                }
+            })
+            .fail(function() {
+                $.bootstrapPurr('{{ _("Error occured.")}}',{
+                    offset: { amount: 10},
+                    type: 'danger',
+                    align: 'center',
+                    draggable: false
+                });
+            });
+        d.stopPropagation();
+        d.preventDefault();
+    }
     a.prototype.addAccount = function(c) {
-        var b;
-        b = $("add_account_form");
-        b.set("send", {
-            method: "post",
-            onSuccess: function() {
+        $.ajax({
+            method:"post",
+            url:"/json/add_account",
+            async: true,
+            data: $("#add_account_form").serialize(),
+            success: function() {
                 return window.location.reload()
-            },
-            onFailure: function() {
-                return root.notify.alert('{{_("Error occured.")}}', {
-                    className: "error"
-                })
             }
+                })
+            .fail(function() {
+                $.bootstrapPurr('{{ _("Error occured.")}}',{
+                    offset: { amount: 10},
+                    type: 'danger',
+                    align: 'center',
+                    draggable: false
+                });
         });
-        b.send();
-        return c.stop()
-    };
+        c.preventDefault();
+    }
     a.prototype.submitAccounts = function(c) {
-        var b;
-        b = $("account_form");
-        b.set("send", {
-            method: "post",
-            onSuccess: function() {
+        $.ajax({
+            method:"post",
+            url:"/json/update_accounts",
+            data: $("#account_form").serialize(),
+            async: true,
+            success: function() {
                 return window.location.reload()
-            },
-            onFailure: function() {
-                return root.notify.alert('{{ _("Error occured.") }}', {
-                    className: "error"
-                })
             }
+                })
+            .fail(function() {
+                $.bootstrapPurr('{{ _("Error occured.")}}',{
+                    offset: { amount: 10},
+                    type: 'danger',
+                    align: 'center',
+                    draggable: false
+                });
         });
-        b.send();
-        return c.stop()
+        c.preventDefault();
     };
-    return a
+    return a;
 })(); 
 {% endautoescape %}
