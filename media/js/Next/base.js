@@ -100,16 +100,12 @@ $(function() {
     });
 
     $("#cap_info").click(function() {
-        /*if (element)
-        {
-            element.hidden=true;
-        }*/
         load_captcha("get", "");
     });
 
     $("#cap_submit").click(function() {
             submit_captcha();
-        //return this.stop();
+            // stop()??
     });
 
     $("#cap_positional").click(on_captcha_click);
@@ -185,17 +181,6 @@ function load_captcha(b, a) {
                 return (c.captcha ? void 0 : clear_captcha());
         }
     });
-
-    /*return new Request.JSON({
-        url: "/json/set_captcha",
-        onSuccess: function(c) {
-            set_captcha(c);
-            return (c.captcha ? void 0 : clear_captcha());
-        },
-        secure: false,
-        async: true,
-        method: b
-    }).send(a)*/
 };
 
 function clear_captcha() {

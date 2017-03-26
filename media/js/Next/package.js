@@ -116,27 +116,23 @@ function Package (ui, id, ele){
     var name;
     var password;
     var folder;
-    //var pname;
+
     this.initialize= function() {
-        //this.ui = ui;
-        //this.id = id;
-        //this.linksLoaded = false;
         thisObject=this;
         if (!ele) {
             this.createElement();
         } else {
-            //this.ele = ele;
-            order = $(ele).find('.order').html(); // ele.getElements("div.order")[0].get("html");
+            order = $(ele).find('.order').html();
             jQuery.data(ele,"order", order);
             jQuery.data(ele,"pid", id);
             this.parseElement();
         }
 
-        var pname = $(ele).find('.packagename'); // this.ele.getElements(".packagename")[0];
-        // this.buttons = new Fx.Tween(this.ele.getElements(".buttons")[0], {link: "cancel"});
+        var pname = $(ele).find('.packagename');
+
         buttons=$(ele).find('.buttons');
         buttons.css("opacity", 0);
-        // budon=this.buttons;
+
         $(pname).mouseenter(function(e) {
             $(this).find('.buttons').fadeTo('fast', 1)
         });
@@ -151,11 +147,11 @@ function Package (ui, id, ele){
     }
 
     this.parseElement= function() {
-        var imgs = $(ele).find('span');//this.ele.getElements('span');
+        var imgs = $(ele).find('span');
 
-        name = $(ele).find('.name');// this.ele.getElements('.name')[0];
-        folder =  $(ele).find('.folder'); // this.ele.getElements('.folder')[0];
-        password = $(ele).find('.password'); //this.ele.getElements('.password')[0];
+        name = $(ele).find('.name');
+        folder =  $(ele).find('.folder');
+        password = $(ele).find('.password');
 
         $(imgs[3]).click(this.deletePackage);
         $(imgs[4]).click(this.restartPackage);
@@ -229,9 +225,7 @@ function Package (ui, id, ele){
     }
 
     this.registerLinkEvents= function() {
-        // .children("li").each(function(ele)
         $(ele).find('.children').children('ul').children("li").each(function(child) {
-        //$(ele).find('.children').each(function(child) {       //??
             var lid = $(this).find('.child').attr('id').match(/[0-9]+/);
             var imgs = $(this).find('.child_secrow span');
             $(imgs[3]).bind('click',{ lid: lid}, function(e) {
