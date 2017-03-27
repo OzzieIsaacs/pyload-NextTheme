@@ -109,6 +109,13 @@ $(function() {
     });
 
     $("#cap_positional").click(on_captcha_click);
+    $.ajax({
+        method:"post",
+        url:"/json/status",
+        async: true,
+        timeout: 3000,
+        success:LoadJsonToContent
+    });
     setInterval(function() {
         $.ajax({
             method:"post",
@@ -126,7 +133,7 @@ function LoadJsonToContent(a) {
     $("#aktiv_from").text(a.queue);
     $("#aktiv_total").text(a.total);
     if (a.captcha) {
-        if ($("#cap_info").css("display") !== "inline") {
+        if ($("#cap_info").css("display") === "none") {
             $("#cap_info").css('display','inline');
             element=$.bootstrapPurr('{{_("New Captcha Request")}}',{
                 offset: { amount: 10},
@@ -158,13 +165,13 @@ function set_captcha(a) {
     if (a.result_type === "textual") {
         $("#cap_textual_img").attr("src", a.src);
         $("#cap_submit").css("display", "inline");
-        $("#cap_title").text( '');
+        $("#cap_box #cap_title").text('');
         $("#cap_textual").css("display", "block");
         return $("#cap_positional").css("display", "none");
     } else {
         if (a.result_type === "positional") {
             $("#cap_positional_img").attr("src", a.src);
-            $("#cap_title").text( '{{_("Please click on the right captcha position.")}}');
+            $("#cap_box #cap_title").text( '{{_("Please click on the right captcha position.")}}');
             $("#cap_submit").css("display", "none");
             return $("#cap_textual").css("display", "none");
         }
@@ -189,7 +196,7 @@ function clear_captcha() {
     $("#cap_positional").css("display", "none");
     $("#cap_positional_img").attr("src", "");
     $("#cap_submit").css("display", "none");
-    $("#cap_title").text( '{{_("No Captchas to read.")}}');
+    $("#cap_box #cap_title").text( '{{_("No Captchas to read.")}}');
 };
 function submit_captcha() {
     load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());

@@ -1,55 +1,49 @@
 {% autoescape true %}
 var root;
 root = this;
-//window.addEvent("domready", function() {
 $(function() {
     var f, c, b, e, a, d;
     $("#password_box").on('click', '#login_password_button', function (j) {
-    //$("#login_password_button").click(function(j) {
         var h, i, g;
-        i = $("#login_new_password").value();
-        g = $("#login_new_password2").value();
+        i = $("#login_new_password").val();
+        g = $("#login_new_password2").val();
         if (i === g) {
-            h = $("#password_form");
-            h.set("send", {
-                onSuccess: function() {
-                    $.bootstrapPurr('{{_(""Success"")}}',{
+            $.ajax({
+                method:"post",
+                url:"/json/change_password",
+                data: $("#password_form").serialize(),
+                async: true,
+                success: function() {
+                    $.bootstrapPurr('{{ _("Settings saved.")}}',{
                         offset: { amount: 10},
                         type: 'success',
                         align: 'center',
                         draggable: false
                     });
-                    /*return root.notify.alert("Success", {
-                        className: "success"
-                    })*/
-                },
-                onFailure: function() {
-                    $.bootstrapPurr('{{_(""Error"")}}',{
+                  }
+                })
+                .fail(function() {
+                    $.bootstrapPurr('{{ _("Error occured.")}}',{
                         offset: { amount: 10},
                         type: 'danger',
                         align: 'center',
                         draggable: false
                     });
-                    /*return root.notify.alert("Error", {
-                        className: "error"
-                    })*/
-                }
             });
-            h.send();
-            // $$('#password_box')[0].hide();
             $('#password_box').modal('hide');
         } else {
             alert('{{_("Passwords did not match.")}}')
         }
-        return j.stop()
+        j.stopPropagation();
+        j.preventDefault();
     });
-    /*d = $$(".change_password");
-    for (e = 0, a = d.length; e < a; e++) {
-        c = d[e];
-        f = c.get("id");
-        b = f.split("|")[1];
-        $("#user_login").set("value", b);
-    }*/
+    $(".change_password").each(function () {
+        userName = $(this).attr("id").split("|")[1];
+        $(this).bind("click",{userName:userName}, function(g) {
+            $("#password_box #user_login").val(userName);
+        });
+    });
+
     $("#quit_box").on('click', '#quit_button', function () {
         $.get( "/api/kill", function() {
             $('#quit_box').modal('hide');

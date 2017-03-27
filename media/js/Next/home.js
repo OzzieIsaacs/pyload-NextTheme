@@ -1,5 +1,5 @@
 var em;
-var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
+//var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
 
 $( document ).ready(function() {
     em = new EntryManager();
@@ -26,10 +26,17 @@ function EntryManager(){
     var container;
     this.initialize = function() {
         thisObject=this;
+        $.ajax({
+            method:"post",
+            url:"/json/links",
+            async: true,
+            timeout: 30000,
+            success: thisObject.update
+        });
         setInterval(function() {
         $.ajax({
             method:"post",
-            url:"json/links",
+            url:"/json/links",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -67,7 +74,7 @@ function EntryManager(){
                 });
 
             var temp=ids.filter(function(id){
-                if($.inArray(id,data)>-1)
+                if($.inArray(id,dataids)>-1)
                     return false;
                 else
                     return true;
@@ -143,7 +150,7 @@ function LinkEntry(id){
             $(status).addClass('hidden-xs');
             var statusspan = document.createElement("span");
             $(statusspan).html(item.statusmsg);
-            $(statusspan).addClass('label '+ labelcolor(item.status));
+            $(statusspan).removeClass().addClass('label '+ labelcolor(item.status));
             var name = document.createElement("td");
             $(name).html(item.name);
             var info = document.createElement("td");
@@ -166,10 +173,10 @@ function LinkEntry(id){
             $(progress).addClass('progressani aqua');
             $(progress).css('margin-bottom','0px');
             var pgb= document.createElement("div");
-            $(progress).html('');
-            $(progress).attr('role','progress');
-            $(progress).addClass('progress-bar');
-            $(progress).css('width',item.percent+'%');
+            $(pgb).html('');
+            $(pgb).attr('role','progress');
+            $(pgb).addClass('progress-bar');
+            $(pgb).css('width',item.percent+'%');
 
         this.elements = {
             tr:tr,
@@ -203,7 +210,7 @@ function LinkEntry(id){
         this.elements.tr.appendChild(child);
 
         var secondchild = document.createElement('td');
-        $(secondchild).css('colspan','5');
+        $(secondchild).attr('colspan',5);
         secondchild.appendChild(this.elements.progress);
 
         this.elements.pgbTr.appendChild(secondchild);
@@ -230,19 +237,19 @@ function LinkEntry(id){
             $(this.elements.info).text(item.info);
             $(this.elements.bleft).text(item.format_size);
             $(this.elements.percent).text(item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
-            $(this.elements.statusspan).addClass('label '+labelcolor(item.status))
-            if(!operafix)
+            $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status))
+            /*if(!operafix)
             {
                 $(this.bar).css('width',item.percent);
                 /*this.bar.start({
                     'width': item.percent,
-                });*/
+                });
             }
             else
-            {
+            {*/
                 $(this.elements.pgb).css('height','4px');
                 $(this.elements.pgb).css('width',item.percent+'%');
-            }
+            //}
 
     }
     this.remove = function(){
