@@ -100,8 +100,8 @@ function EntryManager(){
                     ids.push(link.fid);
                     container[0].appendChild(entry.elements.tr);
                     container[0].appendChild(entry.elements.pgbTr);
-                    $(entry.fade).css('opacity','1');
-                    $(entry.fadeBar).css('opacity','1');
+                    $(entry.fade).fadeIn('fast');
+                    $(entry.fadeBar).fadeIn('fast');
 
                 }
             });
@@ -115,28 +115,23 @@ function EntryManager(){
 
 
 function LinkEntry(id){
-    // Private variables
-    /*var fid;
-    var elements;*/
 
     this.initialize = function(id){
         this.fid = id;
         this.id = id;
-
-        // this.id = id;
     }
 
     this.parse = function(){
         this.elements = {
             tr: $("#link_"+this.id),
-            name: $("#link_"+this.id+"_name"),//.substitute({id: this.id})),
-            status: $("#link_"+this.id+"_status"),//.substitute({id: this.id})),
-            info: $("#link_"+this.id+"_info"),//.substitute({id: this.id})),
-            bleft: $("#link_"+this.id+"_bleft"),//.substitute({id: this.id})),
-            percent: $("#link_"+this.id+"_percent"),//.substitute({id: this.id})),
-            remove: $("#link_"+this.id+"_remove"),//.substitute({id: this.id})),
-            pgbTr: $("#link_"+this.id+"_pgb_tr"),//.substitute({id: this.id})),
-            pgb: $("#link_"+this.id+"_pgb"),//.substitute({id: this.id}))
+            name: $("#link_"+this.id+"_name"),
+            status: $("#link_"+this.id+"_status"),
+            info: $("#link_"+this.id+"_info"),
+            bleft: $("#link_"+this.id+"_bleft"),
+            percent: $("#link_"+this.id+"_percent"),
+            remove: $("#link_"+this.id+"_remove"),
+            pgbTr: $("#link_"+this.id+"_pgb_tr"),
+            pgb: $("#link_"+this.id+"_pgb"),
         };
         this.initEffects();
     }
@@ -144,7 +139,7 @@ function LinkEntry(id){
         try{
             var tr = document.createElement("tr");
             $(tr).html('');
-            $(tr).css('opacity',0);
+            $(tr).css('display','none')
             var status = document.createElement("td");
             $(status).html('&nbsp;');
             $(status).addClass('hidden-xs');
@@ -238,27 +233,16 @@ function LinkEntry(id){
             $(this.elements.bleft).text(item.format_size);
             $(this.elements.percent).text(item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
             $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status))
-            /*if(!operafix)
-            {
-                $(this.bar).css('width',item.percent);
-                /*this.bar.start({
-                    'width': item.percent,
-                });
-            }
-            else
-            {*/
-                $(this.elements.pgb).css('height','4px');
-                $(this.elements.pgb).css('width',item.percent+'%');
-            //}
+            $(this.elements.pgb).css('width',item.percent+'%').animate({duration:'slow'});
 
     }
     this.remove = function(){
-        $(this.fade).css('opacity','0');
-        $(this.fadeBar).css('opacity','0');
-        this.elements.tr.remove();
-        this.elements.pgbTr.remove();
-        //this.fade.start('opacity',0).chain(function(){elements.tr.dispose();}.bind(this));
-        //this.fadeBar.start('opacity',0).chain(function(){elements.pgbTr.dispose();}.bind(this));
+        $(this.fade).fadeOut("slow",function(){
+            this.remove();
+        });
+        $(this.fadeBar).fadeOut("slow",function(){
+            this.remove();
+        });
     }
     this.initialize(id);
 }

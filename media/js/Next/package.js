@@ -265,7 +265,7 @@ function Package (ui, id, ele){
 
     this.deletePackage= function(event) {
         indicateLoad();
-        $.get( '/api/deletePackages/[' + thisObject.id + "]", function() {
+        $.get( '/api/deletePackages/[' + id + "]", function() {
             $(ele).remove();
                 indicateFinish();
         })
