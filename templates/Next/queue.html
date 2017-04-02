@@ -1,6 +1,7 @@
 {% extends 'Next/base.html' %}
 {% block head %}
 
+<script type="text/javascript" src="/media/js/Next/Sortable.min.js"></script>
 <script type="text/javascript" src="/media/js/Next/package.js"></script>
 
 <script type="text/javascript">
@@ -38,21 +39,20 @@ $(function() {
 
     <div class="packagename col-xs-8 col-sm-8 breakWords" style="cursor: pointer">
         <span class="glyphicon glyphicon-folder-close"></span>
-        <span class="name" style="font-size: 16px; font-weight: bold;"><em class="package_drag" style="font-style:normal">{{package.name }}</em></span>
-        &nbsp;&nbsp;
+        <span class="name" style="font-size: 16px; font-weight: bold;">{{package.name }}</span>
         <span class="buttons" style="opacity:0">
-        <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/media/Next/img/delete.png" /></span>
-        &nbsp;&nbsp;
-        <span class="glyphicon glyphicon-repeat" title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/Next/img/arrow_refresh.png" /></span>
-        &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/Next/img/pencil.png" /></span>
-        &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/Next/img/package_go.png" /></span>
+        <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="margin-left: 10px; cursor: pointer; width:12px; height:12px;" src="/media/Next/img/delete.png"></span>
+
+        <span class="glyphicon glyphicon-repeat" title="{{_("Restart Package")}}" style=" cursor: pointer; height:12px;" src="/media/Next/img/arrow_refresh.png"></span>
+
+         <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="cursor: pointer; height:12px;" src="/media/Next/img/pencil.png"></span>
+
+         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="cursor: pointer; height:12px;" src="/media/Next/img/package_go.png"></span>
         </span>
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
 
-    <div id="progress" class="progress col-xs-4 col-sm-4 noPadding" style="margin-top: -5px; color:#fff; font-weight: 700; font-size:12px;">
+    <div id="progress" class="progress col-xs-4 col-sm-4 noPadding" style="margin-top: -5px; color:#fff; font-weight: 700; font-size:12px; cursor:all-scroll;">
         <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1; text-align:left;"> </div>
         <label style="left:10px; line-height: 20px; position: absolute; z-index: 2; color: #000;">{{ package.linksdone }} / {{ package.linkstotal }}</label>
         <label class="hidden-xs" style="line-height: 20px; right: 30px; position: absolute; z-index: 2; color:#000;">

@@ -50,9 +50,17 @@ function PackageUI (url, type){
             var id = this.children[0].id.match(/[0-9]+/);
             packages.push(new Package(thisObject, id, this));
         });
+        this.sorts= new Sortable.create($('#package-list')[0],{
+            handle: '.progress',
+            preventOnFilter: false,
+            animation: 150,
+            onEnd: function (evt) {
+                var order = $(evt.item).data('pid') + '|' + evt.newIndex
+                $.get( '/json/package_order/' + order, indicateFinish
+                    )
+                    .fail(indicateFail);
     }
-
-    this.loadPackages= function() {
+        });
     }
 
     this.deleteFinished= function() {
@@ -83,27 +91,6 @@ function PackageUI (url, type){
             .fail(indicateFail);
     }
 
-    this.startSort= function(ele, copy) {
-    }
-
-    this.saveSort= function(ele, copy) {
-        var order = [];
-        this.sorts.serialize(function(li, pos) {
-            if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("pid") + "|" + pos)
-            }
-            li.data("order", pos)
-        });
-        if (order.length > 0) {
-            indicateLoad();
-            new Request.JSON({
-                method: 'get',
-                url: '/json/package_order/' + order[0],
-                onSuccess: indicateFinish,
-                onFailure: indicateFail
-            }).send();
-        }
-    }
     this.initialize(url,type);
 }
 
@@ -111,7 +98,6 @@ function Package (ui, id, ele){
     // private variables
     var linksLoaded = false;
     var thisObject;
-    var order;
     var buttons;
     var name;
     var password;
@@ -122,8 +108,6 @@ function Package (ui, id, ele){
         if (!ele) {
             this.createElement();
         } else {
-            order = $(ele).find('.order').html();
-            jQuery.data(ele,"order", order);
             jQuery.data(ele,"pid", id);
             this.parseElement();
         }
@@ -158,7 +142,7 @@ function Package (ui, id, ele){
         $(imgs[5]).click(this.editPackage);
         $(imgs[6]).click(this.movePackage);
 
-        $(ele).find('.packagename').click(this.toggle)
+        $(ele).find('.packagename').click(this.toggle);
     }
 
     this.loadLinks = function() {
@@ -198,12 +182,12 @@ function Package (ui, id, ele){
             }
             
 
-            var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='"+link.icon+" sorthandle'></span></span>\n";
-            html += "<span style='font-size: 18px; text-weight:bold'><a href='"+link.url+"'>";//.substitute({"url": link.url});
-            html += link.name+"</a></span><br/><div class='child_secrow' style='background-color: #dcdcdc; margin-left: 21px; margin-bottom: 7px;'>";//.substitute({"name": link.name});
-            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.statusmsg+"</span>&nbsp;"+link.error+"&nbsp;";//.substitute({"statusmsg": link.statusmsg, "error":link.error});
-            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.format_size+"</span>";//.substitute({"format_size": link.format_size});
-            html += "<span class='child_status' style='font-size: 12px; color:#555'> "+link.plugin+"</span>&nbsp;&nbsp;";//.substitute({"plugin": link.plugin});
+            var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='"+link.icon+"'></span></span>\n";
+            html += "<span style='font-size: 18px; text-weight:bold'><a href='"+link.url+"'>";
+            html += link.name+"</a></span><br/><div class='child_secrow' style='background-color: #dcdcdc; margin-left: 21px; margin-bottom: 7px;'>";
+            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.statusmsg+"</span>&nbsp;"+link.error+"&nbsp;";
+            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.format_size+"</span>";
+            html += "<span class='child_status' style='font-size: 12px; color:#555'> "+link.plugin+"</span>&nbsp;&nbsp;";
             html += "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;";
             html += "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
 
@@ -212,12 +196,12 @@ function Package (ui, id, ele){
             $(div).addClass("child");
             $(div).html(html);
 
-            jQuery.data(li,"order", link.order);
             jQuery.data(li,"lid", link.id);
 
             li.appendChild(div);
             $(ul)[0].appendChild(li);
         });
+
         thisObject.registerLinkEvents();
         linksLoaded = true;
         indicateFinish();
@@ -239,7 +223,7 @@ function Package (ui, id, ele){
                 $.get( '/api/restartFile/' + lid, function() {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
-                    $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info sorthandle");
+                    $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
                     $(spans[1]).html("{{_("queued")}}");
                         indicateSuccess();
