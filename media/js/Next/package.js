@@ -53,7 +53,7 @@ function PackageUI (url, type){
         this.sorts= new Sortable.create($('#package-list')[0],{
             handle: '.progress',
             preventOnFilter: false,
-            animation: 150,
+            animation: 250,
             onEnd: function (evt) {
                 var order = $(evt.item).data('pid') + '|' + evt.newIndex
                 $.get( '/json/package_order/' + order, indicateFinish
@@ -182,7 +182,7 @@ function Package (ui, id, ele){
             }
             
 
-            var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='"+link.icon+"'></span></span>\n";
+            var html = "<span class='child_status'><span style='margin-right: 2px;' class='"+link.icon+"'></span></span>\n";
             html += "<span style='font-size: 18px; text-weight:bold'><a href='"+link.url+"'>";
             html += link.name+"</a></span><br/><div class='child_secrow' style='background-color: #dcdcdc; margin-left: 21px; margin-bottom: 7px;'>";
             html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.statusmsg+"</span>&nbsp;"+link.error+"&nbsp;";
@@ -231,6 +231,16 @@ function Package (ui, id, ele){
                     .fail(indicateFail);
             });
         });
+        this.sorts= new Sortable.create($(ele).find('.children').children('ul')[0],{
+            handle: '.child_status',
+            animation: 250,
+            onEnd: function (evt) {
+                var order = $(evt.item).data('lid') + '|' + evt.newIndex
+                $.get( '/json/link_order/' + order, indicateFinish
+                    )
+                    .fail(indicateFail);
+                }
+        });
     }
 
     this.toggle = function() {
@@ -245,7 +255,6 @@ function Package (ui, id, ele){
             }
             }
         }
-
 
     this.deletePackage= function(event) {
         indicateLoad();
@@ -318,21 +327,6 @@ function Package (ui, id, ele){
         $('#pack_box').modal('hide');
     }
 
-    this.saveSort= function(ele, copy) {
-        var order = [];
-        this.sorts.serialize(function(li, pos) {
-            if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("lid") + "|" + pos)
-            }
-            li.data("order", pos)
-        });
-        if (order.length > 0) {
-            indicateLoad();
-            $.get( '/json/link_order/' + order[0], indicateFinish
-            )
-                .fail(indicateFail);
-        }
-    }
     this.initialize();
 }
 
