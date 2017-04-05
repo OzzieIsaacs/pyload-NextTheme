@@ -108,7 +108,7 @@ $(function() {
             // stop()??
     });
 
-    $("#cap_positional").click(on_captcha_click);
+    $("#cap_box #cap_positional").click(on_captcha_click);
     $.ajax({
         method:"post",
         url:"/json/status",
@@ -205,10 +205,10 @@ function submit_captcha() {
 };
 function on_captcha_click(c) {
     var b, a, d;
-    b = c.target.getPosition();
-    a = (c.page.x - b.x).toFixed(0);
-    d = (c.page.y - b.y).toFixed(0);
-    $("#cap_result").value(a + "," + d);
+    // b = c.target.getPosition();
+    var x = (c.pageX - $(this).offset().left).toFixed(0);
+    var y = (c.pageY - $(this).offset().top).toFixed(0);
+    $("#cap_box #cap_result").val( x + ' , ' + y );
     return submit_captcha();
 }; 
 {% endautoescape %}
