@@ -95,6 +95,17 @@ $(function() {
         $.get( "/api/stopAllDownloads" );
     });
 
+    $("#restart_failed").click(function() {
+        $.get( '/api/restartFailed',function(data) {        
+            $.bootstrapPurr('{{_("Success")}}.',{
+            offset: { amount: 10},
+            type: 'success',
+            align: 'center',
+            draggable: false
+        });
+       });
+    });
+    
     $("#action_stop").click(function() {
         $.get( "/api/pauseServer" );
     });
