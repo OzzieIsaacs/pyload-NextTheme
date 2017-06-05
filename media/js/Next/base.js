@@ -106,6 +106,19 @@ $(function() {
        });
     });
     
+    $("#del_finished").click(function() {
+        $.get( '/api/deleteFinished', function(data) {
+            if (data.length > 0) {
+                $.bootstrapPurr('{{_("Success")}}.',{
+                offset: { amount: 10},
+                type: 'success',
+                align: 'center',
+                draggable: false
+                });
+            }
+        });
+    });
+    
     $("#action_stop").click(function() {
         $.get( "/api/pauseServer" );
     });
@@ -208,6 +221,7 @@ function clear_captcha() {
     $("#cap_positional_img").attr("src", "");
     $("#cap_submit").css("display", "none");
     $("#cap_box #cap_title").text( '{{_("No Captchas to read.")}}');
+    $('#cap_box').modal('toggle');
 };
 function submit_captcha() {
     load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());

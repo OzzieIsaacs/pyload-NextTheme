@@ -141,6 +141,7 @@ function Package (ui, id, ele){
         $(imgs[4]).click(this.restartPackage);
         $(imgs[5]).click(this.editPackage);
         $(imgs[6]).click(this.movePackage);
+        $(imgs[7]).click(this.editOrder);
 
         $(ele).find('.packagename').click(this.toggle);
     }
@@ -299,6 +300,23 @@ function Package (ui, id, ele){
         event.stopPropagation();
         event.preventDefault();
     }
+
+    this.editOrder= function(event) {
+        indicateLoad();
+        $.get( '/json/package/' + id, function(data){
+            length=data.links.length;
+            for (i=1; i <= length/2; i++){
+                order = data.links[length-i].fid + '|' + (i-1);
+                $.get( '/json/link_order/'+ order)
+                     .fail(indicateFail);
+            }
+        });
+        indicateFinish();
+        thisObject.close();
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
 
     this.editPackage= function(event) {
         event.stopPropagation();
