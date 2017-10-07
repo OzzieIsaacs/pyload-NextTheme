@@ -3,13 +3,13 @@
 This is an improved "Next Theme" for pyload. I found basic theme on this site: http://www.howto-blog.de/pyload-themes-installieren/
 I improved it a little bit to make it working on smaller devices like tablets and smartphones, and I'd like to share it with you.
 
-<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/blob/master/screenshots/tablet_view.jpg" width="500"> 
+<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/raw/master/screenshots/tablet_view.jpg" width="500"> 
 
-<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/blob/master/screenshots/queue.jpg" width="500">
+<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/raw/master/screenshots/queue.jpg" width="500">
 
-<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/blob/master/screenshots/phone_view.jpg" width="500">
+<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/raw/master/screenshots/phone_view.jpg" width="500">
 
-<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/blob/master/screenshots/adder.jpg" width="500">
+<img src="https://github.com/OzzieIsaacs/pyload-NextTheme/raw/master/screenshots/adder.jpg" width="500">
 
 
 ## Installation
