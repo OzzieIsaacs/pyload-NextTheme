@@ -7,7 +7,7 @@
         {% if okey not in ("desc","outline") %}
             <tr>
                 <td><label for="{{skey}}|{{okey}}"
-                           style="color:#424242;">{{ option.desc }}:</label></td>
+                           style="color:#424242;">{{ _(option.desc) }}:</label></td>
                 <td>
                     {% if option.type == "bool" %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
