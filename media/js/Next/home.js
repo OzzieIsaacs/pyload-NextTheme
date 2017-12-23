@@ -125,6 +125,7 @@ function LinkEntry(id){
         this.elements = {
             tr: $("#link_"+this.id),
             name: $("#link_"+this.id+"_name"),
+            hoster:$("#link_"+this.id+"_hoster"),
             status: $("#link_"+this.id+"_status"),
             info: $("#link_"+this.id+"_info"),
             bleft: $("#link_"+this.id+"_bleft"),
@@ -148,6 +149,9 @@ function LinkEntry(id){
             $(statusspan).removeClass().addClass('label '+ labelcolor(item.status));
             var name = document.createElement("td");
             $(name).html(item.name);
+            var hoster = document.createElement("td");
+            $(hoster).html(item.plugin);
+            $(hoster).addClass('hidden-xs');
             var info = document.createElement("td");
             $(info).html(item.info);
             var bleft = document.createElement("td");
@@ -178,6 +182,7 @@ function LinkEntry(id){
             status:status,
             statusspan:statusspan,
             name:name,
+            hoster:hoster,
             info:info,
             bleft:bleft,
             percent:percent,
@@ -192,6 +197,7 @@ function LinkEntry(id){
         this.elements.progress.appendChild(this.elements.pgb);
         this.elements.tr.appendChild(this.elements.status);
         this.elements.tr.appendChild(this.elements.name);
+        this.elements.tr.appendChild(this.elements.hoster);
         this.elements.tr.appendChild(this.elements.info);
         this.elements.tr.appendChild(this.elements.bleft);
         this.elements.tr.appendChild(this.elements.bleft);
@@ -205,7 +211,7 @@ function LinkEntry(id){
         this.elements.tr.appendChild(child);
 
         var secondchild = document.createElement('td');
-        $(secondchild).attr('colspan',5);
+        $(secondchild).attr('colspan',6);
         secondchild.appendChild(this.elements.progress);
 
         this.elements.pgbTr.appendChild(secondchild);
@@ -228,6 +234,7 @@ function LinkEntry(id){
     }
     this.update = function(item){
             $(this.elements.name).text( item.name);
+            $(this.elements.hoster).text( item.plugin);
             $(this.elements.statusspan).text(item.statusmsg);
             $(this.elements.info).text(item.info);
             $(this.elements.bleft).text(item.format_size);
