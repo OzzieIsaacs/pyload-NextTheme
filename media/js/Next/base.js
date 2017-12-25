@@ -65,6 +65,13 @@ Array.prototype.remove = function(d, c) {
     return this.push.apply(this, a);
 };
 $(function() {
+    $("#add_file").on("change", function () {
+        var filename = $(this).val();
+        if (filename.substring(3, 11) === "fakepath") {
+            filename = filename.substring(12);
+        } // Remove c:\fake at beginning from localhost chrome
+        $("#upload-file-info").html(filename);
+    });
     $("#add_form").submit(function(event) {
         event.preventDefault();
         if ($("#add_name").value === "" && $("#add_file").value === "") {
