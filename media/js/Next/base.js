@@ -80,7 +80,7 @@ $(function() {
         } else {
             var form = new FormData(this);
             $.ajax({
-                    url: "/json/add_package",
+                    url: "{{'/json/add_package'|url}}",
                     method: "POST",
                     data: form,
                     processData: false,
@@ -95,15 +95,15 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get( "/api/unpauseServer" );
+        $.get( "{{'/api/unpauseServer'|url}}" );
     });
 
     $("#action_cancel").click(function() {
-        $.get( "/api/stopAllDownloads" );
+        $.get( "{{'/api/stopAllDownloads'|url}}" );
     });
 
     $("#restart_failed").click(function() {
-        $.get( '/api/restartFailed',function(data) {        
+        $.get( "{{'/api/restartFailed'|url}}",function(data) {
             $.bootstrapPurr('{{_("Success")}}.',{
             offset: { amount: 10},
             type: 'success',
@@ -112,9 +112,9 @@ $(function() {
         });
        });
     });
-    
+
     $("#del_finished").click(function() {
-        $.get( '/api/deleteFinished', function(data) {
+        $.get( "{{'/api/deleteFinished'|url}}", function(data) {
             if (data.length > 0) {
                 $.bootstrapPurr('{{_("Success")}}.',{
                 offset: { amount: 10},
@@ -127,7 +127,7 @@ $(function() {
     });
     
     $("#action_stop").click(function() {
-        $.get( "/api/pauseServer" );
+        $.get( "{{'/api/pauseServer'|url}}" );
     });
 
     $("#cap_info").click(function() {
@@ -142,7 +142,7 @@ $(function() {
     $("#cap_box #cap_positional").click(on_captcha_click);
     $.ajax({
         method:"post",
-        url:"/json/status",
+        url: "{{ '/json/status'|url }}",
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -150,7 +150,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method:"post",
-            url:"/json/status",
+            url: '{{ "/json/status"|url }}',
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -210,7 +210,7 @@ function set_captcha(a) {
 };
 function load_captcha(b, a) {
     $.ajax({
-            url: "/json/set_captcha",
+            url: "{{'/json/set_captcha'|url}}",
             async: true,
             method: b,
             data: a,
@@ -220,7 +220,7 @@ function load_captcha(b, a) {
         }
     });
 };
-
+ 
 function clear_captcha() {
     $("#cap_textual").css("display", "none");
     $("#cap_textual_img").attr("src", "");
