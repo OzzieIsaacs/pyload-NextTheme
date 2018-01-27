@@ -1,7 +1,7 @@
 var em;
 //var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
 
-$( document ).ready(function() {
+$(document).ready(function() {
     em = new EntryManager();
 });
 
@@ -28,7 +28,7 @@ function EntryManager(){
         thisObject=this;
         $.ajax({
             method:"post",
-            url: '{{ "/json/links"|url }}',
+            url: "{{'/json/links'|url}}",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -36,7 +36,7 @@ function EntryManager(){
         setInterval(function() {
         $.ajax({
             method:"post",
-            url: '{{ "/json/links"|url }}',
+            url: "{{'/json/links'|url}}",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -146,7 +146,7 @@ function LinkEntry(id){
             $(status).addClass('hidden-xs');
             var statusspan = document.createElement("span");
             $(statusspan).html(item.statusmsg);
-            $(statusspan).removeClass().addClass('label '+ labelcolor(item.status));
+            $(statusspan).removeClass().addClass('label '+ labelcolor(item.status) + ' lbl_status');
             var name = document.createElement("td");
             $(name).html(item.name);
             var hoster = document.createElement("td");
@@ -164,6 +164,7 @@ function LinkEntry(id){
             $(remove).html('');
             $(remove).addClass('glyphicon glyphicon-remove');
             $(remove).css('margin-left','3px');
+            $(remove).css('cursor','pointer');
             var pgbTr= document.createElement("tr");
             $(pgbTr).html('');
             $(pgbTr).css('border-top-color','#fff');
@@ -171,10 +172,16 @@ function LinkEntry(id){
             $(progress).html('');
             $(progress).addClass('progressani aqua');
             $(progress).css('margin-bottom','0px');
+            $(progress).css('margin-left', '4px');
             var pgb= document.createElement("div");
-            $(pgb).html('');
+            $(pgb).html('' + item.percent + '%');
             $(pgb).attr('role','progress');
             $(pgb).addClass('progress-bar');
+            $(pgb).data('role', 'progressbar');
+            $(pgb).data('aria-valuenow', '0');
+            $(pgb).data('aria-valuemin', '0');
+            $(pgb).data('aria-valuemax', '100');
+            $(pgb).css('height', '35px');
             $(pgb).css('width',item.percent+'%');
 
         this.elements = {
@@ -239,8 +246,9 @@ function LinkEntry(id){
             $(this.elements.info).text(item.info);
             $(this.elements.bleft).text(item.format_size);
             $(this.elements.percent).text(item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
-            $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status))
+            $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status) + ' lbl_status');
             $(this.elements.pgb).css('width',item.percent+'%').animate({duration:'slow'});
+            $(this.elements.pgb).html('' + item.percent + '%');
 
     }
     this.remove = function(){

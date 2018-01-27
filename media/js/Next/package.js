@@ -1,41 +1,10 @@
 var root = this;
 
-$(function() {
-});
-
-function indicateLoad() {
-    $("#load-indicator").css('opacity',1)
-}
-
-function indicateFinish() {
-    $("#load-indicator").css('opacity',0)
-}
-
-function indicateSuccess() {
-    indicateFinish();
-    $.bootstrapPurr('{{_("Success")}}.',{
-        offset: { amount: 10},
-        type: 'success',
-        align: 'center',
-        draggable: false
-    });
-}
-
-function indicateFail() {
-    indicateFinish();
-    $.bootstrapPurr('{{_("Failed")}}.',{
-        offset: { amount: 10},
-        type: 'danger',
-        align: 'center',
-        draggable: false
-    });
-}
-
 function PackageUI (url, type){
-    var packages= [];
+    var packages = [];
     var thisObject;
-    this.initialize= function(url, type) {
-        thisObject=this;
+    this.initialize = function(url, type) {
+        thisObject = this;
         this.url = url;
         this.type = type;
 
@@ -43,55 +12,67 @@ function PackageUI (url, type){
         $("#restart_failed").click(this.restartFailed);
         this.parsePackages();
 
-    }
+    };
 
-    this.parsePackages= function() {
-        $("#package-list").children("li").each(function(ele) {
-            var id = this.children[0].id.match(/[0-9]+/);
+    this.parsePackages = function() {
+       $("#package-list").children("li").each(function(ele) {
+            var id = this.id.match(/[0-9]+/);
             packages.push(new Package(thisObject, id, this));
         });
-        this.sorts= new Sortable.create($('#package-list')[0],{
-            handle: '.progress',
-            preventOnFilter: false,
-            animation: 250,
-            onEnd: function (evt) {
-                var order = $(evt.item).data('pid') + '|' + evt.newIndex
-                $.get( "{{'/json/package_order/'|url}}" + order, indicateFinish
-                    )
-                    .fail(indicateFail);
+        $("#package-list").sortable({
+            handle: ".progress",
+            axis: "y",
+            cursor: "grabbing",
+            start: function(e, ui) {
+                $(this).attr('data-previndex', ui.item.index());
+            },
+            stop: function(event, ui) {
+                var newIndex = ui.item.index();
+                var oldIndex = $(this).attr('data-previndex');
+                $(this).removeAttr('data-previndex');
+                if (newIndex == oldIndex) {
+                    return false;
                 }
+                var order = ui.item.data('pid') + '|' + newIndex;
+                indicateLoad();
+                $.get("{{'/json/package_order/'|url}}" + order, function () {
+                    indicateFinish();
+                    return true;
+                } ).fail(function () {
+                    indicateFail();
+                    return false;
+                });
+          }
         });
-    }
+    };
 
-    this.deleteFinished= function() {
+    this.deleteFinished = function() {
         indicateLoad();
-        $.get( '/api/deleteFinished', function(data) {
+        $.get("{{'/api/deleteFinished'|url}}", function(data) {
             if (data.length > 0) {
                 window.location.reload();
             } else {
-                $.each(packages,function(pack) {
+                $.each(packages, function (pack) {
                     this.close();
                 });
             }
             indicateSuccess();
-        })
-            .fail(indicateFail);
-    }
+        }).fail(indicateFail);
+    };
 
     this.restartFailed = function () {
         indicateLoad();
-        $.get( '/api/restartFailed', function(data) {
+        $.get( "{{'/api/restartFailed'|url}}", function(data) {
             if (data.length > 0) {
                 $.each(packages,function(pack) {
                     this.close();
                 });
             }
             indicateSuccess();
-        })
-            .fail(indicateFail);
-    }
+        }).fail(indicateFail);
+    };
 
-    this.initialize(url,type);
+    this.initialize(url, type);
 }
 
 function Package (ui, id, ele){
@@ -103,8 +84,8 @@ function Package (ui, id, ele){
     var password;
     var folder;
 
-    this.initialize= function() {
-        thisObject=this;
+    this.initialize = function() {
+        thisObject = this;
         if (!ele) {
             this.createElement();
         } else {
@@ -114,7 +95,7 @@ function Package (ui, id, ele){
 
         var pname = $(ele).find('.packagename');
 
-        buttons=$(ele).find('.buttons');
+        buttons = $(ele).find('.buttons');
         buttons.css("opacity", 0);
 
         $(pname).mouseenter(function(e) {
@@ -124,13 +105,13 @@ function Package (ui, id, ele){
         $(pname).mouseleave( function(e) {
             $(this).find('.buttons').fadeTo('fast', 0)
         });
-    }
+    };
 
-    this.createElement= function() {
+    this.createElement = function() {
         alert("create");
-    }
+    };
 
-    this.parseElement= function() {
+    this.parseElement = function() {
         var imgs = $(ele).find('span');
 
         name = $(ele).find('.name');
@@ -144,15 +125,14 @@ function Package (ui, id, ele){
         $(imgs[7]).click(this.editOrder);
 
         $(ele).find('.packagename').click(this.toggle);
-    }
+    };
 
     this.loadLinks = function() {
         indicateLoad();
-        $.get( "{{'/json/package/'|url}}" + id, thisObject.createLinks)
-            .fail(indicateFail);
-    }
+        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks).fail(indicateFail);
+    };
 
-    this.createLinks= function(data) {
+    this.createLinks = function(data) {
         var ul = $("#sort_children_" + id[0]);
         ul.html("");
         $.each(data.links, function(key, link) {      // data.links.each(
@@ -160,40 +140,36 @@ function Package (ui, id, ele){
             var li = document.createElement("li");
             $(li).css("margin-left",0);
 
-            if (link.icon == 'arrow_right.png'){
-                    link.icon = 'glyphicon glyphicon-arrow-right text-primary';
-            }
-            if (link.icon == 'status_downloading.png'){
-                    link.icon = 'glyphicon glyphicon-cloud-download text-primary';
-            }
-            if (link.icon == 'status_failed.png'){
-                    link.icon = 'glyphicon glyphicon-exclamation-sign text-danger';
-            }
-            if (link.icon == 'status_finished.png'){
+            if (link.status === 0){
                     link.icon = 'glyphicon glyphicon-ok text-success';
-            }
-            if (link.icon == 'status_queue.png'){
+            }else if (link.status === 2 || link.status === 3){
                     link.icon = 'glyphicon glyphicon-time text-info';
-            }
-            if (link.icon == 'status_offline.png'){
+            }else if (link.status ===  9 || link.status === 1){
                     link.icon = 'glyphicon glyphicon-ban-circle text-danger';
-            }
-            if (link.icon == 'status_waiting.png'){
+            }else if (link.status === 5){
                     link.icon = 'glyphicon glyphicon-time text-info';
-            }
-            
+            }else if (link.status === 8){
+                    link.icon = 'glyphicon glyphicon-exclamation-sign text-danger';
+            }else if (link.status === 4){
+                    link.icon = 'glyphicon glyphicon-arrow-right text-primary';
+            }else if (link.status ===  11 || link.status === 13){
+                    link.icon = 'glyphicon glyphicon-cog text-info';
+            }else
+                link.icon = 'glyphicon glyphicon-cloud-download text-primary';
 
-            var html = "<span class='child_status'><span style='margin-right: 2px;' class='"+link.icon+"'></span></span>\n";
-            html += "<span style='font-size: 18px; text-weight:bold'><a href='"+link.url+"'>";
-            html += link.name+"</a></span><br/><div class='child_secrow' style='background-color: #dcdcdc; margin-left: 21px; margin-bottom: 7px;'>";
-            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.statusmsg+"</span>&nbsp;"+link.error+"&nbsp;";
-            html += "<span class='child_status' style='font-size: 12px; color:#555'>"+link.format_size+"</span>";
-            html += "<span class='child_status' style='font-size: 12px; color:#555'> "+link.plugin+"</span>&nbsp;&nbsp;";
-            html += "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;";
-            html += "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
+            var html = "<span class='child_status'><span style='margin-right: 2px;' class='" + link.icon + "'></span></span>\n" +
+                       "<span style='font-size: 16px; font-weight: bold;'><a href='" + link.url + "'>" + link.name + "</a></span><br/>" +
+                       "<div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px; background-color: #dcdcdc;'>" +                       
+                       "<span class='child_status' style='font-size: 12px; color:#555'>" + link.statusmsg + "</span>&nbsp;" + link.error + "&nbsp;" +
+                       "<span class='child_status' style='font-size: 12px; color:#555'>" + link.format_size + "</span>" +
+                       "<span class='child_status' style='font-size: 12px; color:#555'> " + link.plugin + "</span>&nbsp;&nbsp;" +
+                       "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;" +
+                       "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
 
-            var div=document.createElement("div");
+            var div = document.createElement("div");
             $(div).attr("id","file_" + link.id);
+            $(div).css("padding-left", "30px");
+            $(div).css("cursor", "grab");
             $(div).addClass("child");
             $(div).html(html);
 
@@ -207,118 +183,134 @@ function Package (ui, id, ele){
         linksLoaded = true;
         indicateFinish();
         thisObject.toggle();
-    }
+    };
 
-    this.registerLinkEvents= function() {
+    this.registerLinkEvents = function() {
         $(ele).find('.children').children('ul').children("li").each(function(child) {
             var lid = $(this).find('.child').attr('id').match(/[0-9]+/);
             var imgs = $(this).find('.child_secrow span');
             $(imgs[3]).bind('click',{ lid: lid}, function(e) {
-                $.get( '/api/deleteFiles/[' + lid + "]", function() {
+                $.get("{{'/api/deleteFiles/['|url}}" + lid + "]", function() {
                     $('#file_' + lid).remove()
-                })
-                    .fail(indicateFail);
+                }).fail(indicateFail);
             });
 
             $(imgs[4]).bind('click',{ lid: lid},function(e) {
-                $.get( '/api/restartFile/' + lid, function() {
+                $.get("{{'/api/restartFile/'|url}}" + lid, function() {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
                     $(spans[1]).html("{{_("queued")}}");
                     indicateSuccess();
-                })
-                    .fail(indicateFail);
+                }).fail(indicateFail);
             });
         });
-        this.sorts= new Sortable.create($(ele).find('.children').children('ul')[0],{
-            handle: '.child_status',
-            animation: 250,
-            onEnd: function (evt) {
-                var order = $(evt.item).data('lid') + '|' + evt.newIndex
-                $.get( "{{'/json/link_order/'|url}}" + order, indicateFinish
-                    )
-                    .fail(indicateFail);
+
+
+        $(ele).find('.children').children('ul').sortable({
+            handle: ".child",
+            axis: "y",
+            cursor: "grabbing",
+            start: function(e, ui) {
+                $(this).attr('data-previndex', ui.item.index());
+            },
+            stop: function(event, ui) {
+                var newIndex = ui.item.index();
+                var oldIndex = $(this).attr('data-previndex');
+                $(this).removeAttr('data-previndex');
+                if (newIndex == oldIndex) {
+                    return false;
                 }
+                var order = ui.item.data('lid') + '|' + newIndex;
+                indicateLoad();
+                $.get("{{'/json/link_order/'|url}}" + order, function () {
+                    indicateFinish();
+                    return true;
+                } ).fail(function () {
+                    indicateFail();
+                    return false;
+                });
+          }
         });
-    }
+    };
 
     this.toggle = function() {
+        var icon = $(ele).find('.packageicon');
         var child = $(ele).find('.children');
         if (child.css('display') == "block") {
             $(child).fadeOut();
+            icon.removeClass('glyphicon-folder-open');
+            icon.addClass('glyphicon-folder-close');
         } else {
             if (!linksLoaded) {
                 thisObject.loadLinks();
             } else {
                 $(child).fadeIn();
             }
+            icon.removeClass('glyphicon-folder-close');
+            icon.addClass('glyphicon-folder-open');
         }
-    }
+    };
 
-    this.deletePackage= function(event) {
+    this.deletePackage = function(event) {
         indicateLoad();
-        $.get( '/api/deletePackages/[' + id + "]", function() {
+        $.get("{{'/api/deletePackages/['|url}}" + id + "]", function() {
             $(ele).remove();
             indicateFinish();
-        })
-            .fail(indicateFail);
+        }).fail(indicateFail);
 
         event.stopPropagation();
         event.preventDefault();
-    }
+    };
 
-    this.restartPackage= function(event) {
+    this.restartPackage = function(event) {
         indicateLoad();
-        $.get( '/api/restartPackage/' + id, function() {
+        $.get("{{'/api/restartPackage/'|url}}" + id, function() {
             thisObject.close();
             indicateSuccess();
-        })
-            .fail(indicateFail);
+        }).fail(indicateFail);
         event.stopPropagation();
         event.preventDefault();
-    }
+    };
 
-    this.close= function() {
+    this.close = function() {
         var child = $(ele).find('.children');
         if (child.css('display') == "block") {
             $(child).fadeOut();
         }
-        var ul = $("#sort_children_"+id);
+        var ul = $("#sort_children_" + id);
         $(ul).html("");
         linksLoaded = false;
-    }
+    };
 
-    this.movePackage= function(event) {
+    this.movePackage = function(event) {
         indicateLoad();
-        $.get( "{{'/json/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function() {
+        $.get("{{'/json/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function() {
             $(ele).remove();
             indicateFinish();
-        })
-            .fail(indicateFail);
+        }).fail(indicateFail);
         event.stopPropagation();
         event.preventDefault();
-    }
+    };
 
-    this.editOrder= function(event) {
+    this.editOrder = function(event) {
         indicateLoad();
-        $.get( "{{'/json/package/'|url}}" + id, function(data){
-            length=data.links.length;
-            for (i=1; i <= length/2; i++){
+        $.get("{{'/json/package/'|url}}" + id, function(data){
+            length = data.links.length;
+            for (i = 1; i <= length/2; i++){
                 order = data.links[length-i].fid + '|' + (i-1);
-                $.get( "{{'/json/link_order/'|url}}"+ order)
-                     .fail(indicateFail);
+                $.get( "{{'/json/link_order/'|url}}" + order).fail(indicateFail);
             }
         });
         indicateFinish();
         thisObject.close();
         event.stopPropagation();
         event.preventDefault();
-    }
+    };
 
 
-    this.editPackage= function(event) {
+    this.editPackage = function(event) {
         event.stopPropagation();
         event.preventDefault();
         $("#pack_form").off("submit");
@@ -329,9 +321,9 @@ function Package (ui, id, ele){
         $("#pack_folder").val(folder.text());
         $("#pack_pws").val(password.text());
         $('#pack_box').modal('show');
-    }
+    };
 
-    this.savePackage= function(event) {
+    this.savePackage = function(event) {
         $.ajax({
             url: "{{'/json/edit_package'|url}}",
             type: 'post',
@@ -343,7 +335,7 @@ function Package (ui, id, ele){
         folder.text( $("#pack_folder").val());
         password.text($("#pack_pws").val());
         $('#pack_box').modal('hide');
-    }
+    };
 
     this.initialize();
 }

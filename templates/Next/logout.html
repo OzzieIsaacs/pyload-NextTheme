@@ -1,9 +1,13 @@
 {% extends 'Next/base.html' %}
 
 {% block head %}
-<meta http-equiv="refresh" content="3; url={{ '/'|url }}">
+<meta http-equiv="refresh" content="5; url={{ '/'|url }}">
 {% endblock %}
 
 {% block content %}
-<p><b>{{_("You were successfully logged out.")}}</b></p>
+<div class="col-sm-4 col-sm-offset-4">
+<div align="center" style="padding:8px;">
+    <p class="font-weight-bold">{{_("You were successfully logged out.")}}</p>
+  </div>
+</div>
 {% endblock %}

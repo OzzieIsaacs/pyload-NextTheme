@@ -9,26 +9,16 @@ $(function() {
         g = $("#login_new_password2").val();
         if (i === g) {
             $.ajax({
-                method:"post",
+                method: "post",
                 url: "{{'/json/change_password'|url}}",
                 data: $("#password_form").serialize(),
                 async: true,
-                success: function() {
-                    $.bootstrapPurr('{{ _("Settings saved.")}}',{
-                        offset: { amount: 10},
-                        type: 'success',
-                        align: 'center',
-                        draggable: false
-                    });
-                  }
-                })
-                .fail(function() {
-                    $.bootstrapPurr('{{ _("Error occured.")}}',{
-                        offset: { amount: 10},
-                        type: 'danger',
-                        align: 'center',
-                        draggable: false
-                    });
+                success: function () {
+                    indicateSuccess('{{ _("Settings saved")}}');
+                }
+            })
+            .fail(function() {
+                indicateFail('{{ _("Error occurred")}}');
             });
             $('#password_box').modal('hide');
         } else {
