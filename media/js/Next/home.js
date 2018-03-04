@@ -174,14 +174,12 @@ function LinkEntry(id){
             $(progress).css('margin-bottom','0px');
             $(progress).css('margin-left', '4px');
             var pgb= document.createElement("div");
-            $(pgb).html('' + item.percent + '%');
             $(pgb).attr('role','progress');
             $(pgb).addClass('progress-bar');
             $(pgb).data('role', 'progressbar');
             $(pgb).data('aria-valuenow', '0');
             $(pgb).data('aria-valuemin', '0');
             $(pgb).data('aria-valuemax', '100');
-            $(pgb).css('height', '35px');
             $(pgb).css('width',item.percent+'%');
 
         this.elements = {
@@ -248,7 +246,6 @@ function LinkEntry(id){
             $(this.elements.percent).text(item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
             $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status) + ' lbl_status');
             $(this.elements.pgb).css('width',item.percent+'%').animate({duration:'slow'});
-            $(this.elements.pgb).html('' + item.percent + '%');
 
     }
     this.remove = function(){
