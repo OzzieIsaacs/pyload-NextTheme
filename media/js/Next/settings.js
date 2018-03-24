@@ -6,9 +6,23 @@ $(function() {
     return new SettingsUI();
 });
 
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(searchString, position) {
+    position = position || 0;
+    return this.indexOf(searchString, position) === position;
+  };
+}
+
 SettingsUI = (function() {
     function a() {
         var c, e, b, d;
+
+        var activeTab = sessionStorage.getItem('activeTab');
+        if (activeTab) {
+            sessionStorage.removeItem('activeTab');
+            $('#toptabs a[href="' + activeTab + '"]').tab('show');
+        }
+
         generalPanel = $("#general_form_content");
         pluginPanel = $("#plugin_form_content");
         thisObject = this;
@@ -66,7 +80,7 @@ SettingsUI = (function() {
             }
         }
 
-        searchInput.attr('placeholder', '{{_('Name of plugin')}}');
+        searchInput.attr('placeholder', "{{_('Name of plugin')}}");
         searchInput.removeAttr('disabled');
         searchInput.on('input', function () {
             var query = searchInput.val();
@@ -99,42 +113,46 @@ SettingsUI = (function() {
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
-                indicateSuccess('{{ _("Settings saved")}}');
+                indicateSuccess("{{_('Settings saved')}}");
             }
         })
         .fail(function () {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         d.stopPropagation();
         d.preventDefault();
     };
     a.prototype.addAccount = function(c) {
+        $(this).addClass("disabled");
         $.ajax({
             method: "post",
             url: "{{'/json/add_account'|url}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
-                return window.location.reload()
+                sessionStorage.setItem("activeTab", "#accounts");
+                return window.location.reload();
             }
         })
         .fail(function() {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         c.preventDefault();
     };
     a.prototype.submitAccounts = function(c) {
+        indicateLoad();
         $.ajax({
             method: "post",
             url: "{{'/json/update_accounts'|url}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {
-                return window.location.reload()
+                sessionStorage.setItem("activeTab", "#accounts");
+                return window.location.reload();
             }
         })
         .fail(function() {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         c.preventDefault();
     };
@@ -157,23 +175,24 @@ SettingsUI = (function() {
                 var val = targetInput ? $(targetInput).val().replace("../", "::%2F").replace("..\\", "::%2F") : "";
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
-                    $(this).find("#chooser_title").text('{{_("Select File")}}');
-                    chooserIfrm.attr("src", "/filechooser/" + val);
+                    $(this).find("#chooser_title").text("{{_('Select File')}}");
+                    chooserIfrm.attr("src", "{{'/filechooser/'|url}}" + val);
                 }
                 else if (browseFor === "folder") {
-                    $(this).find("#chooser_title").text('{{_("Select Folder")}}');
-                    chooserIfrm.attr("src", "/pathchooser/" + val);
+                    $(this).find("#chooser_title").text("{{_('Select Folder')}}");
+                    chooserIfrm.attr("src", "{{'/pathchooser/'|url}}" + val);
                 }
             }
         });
-        $("#path_chooser").on("click", function (event) {
-            var targetInput = $(this).data('targetinput');
+        $("#chooser_confirm_button").click(function () {
+            var dialog = $("#path_chooser");
+            var targetInput = dialog.data('targetinput');
             if (targetInput) {
-                $(targetInput).val($(this).find("#path_p").text());
+                $(targetInput).val(dialog.find("#path_p").text());
             }
-            $(this).modal('hide');
+            dialog.modal('hide');
             event.preventDefault();
-        })
+        });
     };
     a.prototype.pathchooserChanged = function(iframe) {
         var path_p = $("#path_p");

@@ -5,16 +5,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link rel="stylesheet" type="text/css" href="{{ "/media/Next/css/window.css"|url }}"/>
-<link rel="stylesheet" type="text/css" href="{{ "/media/Next/css/bootstrap.min.css"|url }}">
-<link rel="stylesheet" type="text/css" href="{{'/media/Next/css/jquery-ui-1.12.1.min.css'|url }}"/>
-<link rel="stylesheet" type="text/css" href="{{ "/media/Next/css/styles.css"|url }}">
+<link rel="stylesheet" type="text/css" href="{{'/media/Next/css/window.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/media/Next/css/bootstrap.min.css'|url}}">
+<link rel="stylesheet" type="text/css" href="{{'/media/Next/css/jquery-ui-1.12.1.min.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/media/Next/css/styles.css'|url}}">
 
 
-<link rel="icon" href="{{ "/favicon.ico"|url }}"/>
+<link rel="icon" href="{{'/favicon.ico'|url}}"/>
 
 
-<title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
+<title>{% block title %}pyLoad {{_('Webinterface')}}{% endblock %}</title>
 
 {% block head %}
 {% endblock %}
@@ -28,12 +28,12 @@
       {% if user.is_authenticated %}
         {% if update %}
         <span>
-        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("pyLoad Update available!")}}</span>
+        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_('pyLoad Update available!')}}</span>
         </span>
         {% endif %}
         {% if plugins %}
         <span>
-        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("Plugins updated, please restart!")}}</span>
+        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_('Plugins updated, please restart!')}}</span>
         </span>
         {% endif %}
       {% endif %}
@@ -50,7 +50,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-        <a class="navbar-brand" href="#"><img id="head-logo" src="{{ '/media/Next/img/pyload-logo.png'|url }}" alt="pyLoad" style="height:30px;"/></a>
+        <a class="navbar-brand" href="#"><img id="head-logo" src="{{'/media/Next/img/pyload-logo.png'|url}}" alt="pyLoad" style="height:30px;"/></a>
       </div>
 	  <a href="{{'/'|url }}"></a>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -60,7 +60,7 @@
             {% if not name in url and right -%}class="right"{%- endif %}
           {%- endmacro %}
 
-		{% block menu %}
+        {% block menu %}
          {% if user.is_authenticated %}
           <li ondragstart="return false;" {{ selected('home') }}>
               <a href="{{'/'|url }}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_("Home")}}</span></a>
@@ -90,7 +90,7 @@
           </li>
         {% endif %}         
          {% endif %}
-		{% endblock %}
+        {% endblock %}
 
         </ul>
         {% if user.is_authenticated %}
@@ -138,8 +138,7 @@
 <br class="clear"/>
 
 <div id="body-wrapper" class="dokuwiki">
-
-<div id="content" style="width: 98%; padding-left:10px; padding-right:10px;" lang="en" dir="ltr">
+	<div id="content" style="width: 98%; padding-left:10px; padding-right:10px;" lang="en" dir="ltr">
 
 <h3>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h3>
 
@@ -181,14 +180,16 @@
 {% include "Next/captcha.html" %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
-<script type="text/javascript" src="{{ "/media/js/Next/jquery-3.2.1.min.js"|url }}"></script>
-<script type="text/javascript" src="{{ "/media/js/Next/jquery-ui-1.12.1.min.js"|url }}"></script>
-<script type="text/javascript" src="{{ "/media/js/Next/jquery-bootstrap-purr.min.js"|url }}"></script>
-<script type="text/javascript" src="{{ "/media/js/Next/bootstrap.min.js"|url }}"></script>
-<script type="text/javascript" src="{{ "/media/js/Next/base.js"|url }}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/jquery-3.2.1.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/jquery-ui-1.12.1.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/jquery-bootstrap-purr.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/bootstrap.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/base.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/Next/recaptcha-v2-interactive.js'|url}}"></script>
 
 {% block footer %}
 {% endblock %}
 
 </body>
 </html>
+

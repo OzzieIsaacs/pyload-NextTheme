@@ -45,9 +45,9 @@ function EntryManager(){
 
         ids = [{% for link in content %}
         {% if forloop.last %}
-            {{ link.id }}
+            {{link.id}}
         {% else %}
-         {{ link.id }},
+         {{link.id}},
         {% endif %}
         {% endfor %}];
 
@@ -56,14 +56,14 @@ function EntryManager(){
         this.parseFromContent();
 
         // this.json.startTimer();
-    }
+    };
     this.parseFromContent = function (){
         $.each(ids,function(id,index){
             var entry = new LinkEntry(id);
             entry.parse();
             entries.push(entry)
         });
-    }
+    };
     this.update = function (data){
         try{
             ids = entries.map(function(item){
@@ -74,7 +74,7 @@ function EntryManager(){
                 });
 
             var temp=ids.filter(function(id){
-                if($.inArray(id,dataids)>-1)
+                if ($.inArray(id,dataids)>-1)
                     return false;
                 else
                     return true;
@@ -108,7 +108,7 @@ function EntryManager(){
         }catch(e){
             alert(e)
         }
-    }
+    };
     // initialize object
     this.initialize();
 }
@@ -119,7 +119,7 @@ function LinkEntry(id){
     this.initialize = function(id){
         this.fid = id;
         this.id = id;
-    }
+    };
 
     this.parse = function(){
         this.elements = {
@@ -135,7 +135,7 @@ function LinkEntry(id){
             pgb: $("#link_"+this.id+"_pgb"),
         };
         this.initEffects();
-    }
+    };
     this.insert = function(item){
         try{
             var tr = document.createElement("tr");
@@ -195,7 +195,7 @@ function LinkEntry(id){
             pgbTr:pgbTr,
             progress:progress,
             pgb:pgb
-        }
+        };
 
 
         this.elements.status.appendChild(this.elements.statusspan);
@@ -225,7 +225,7 @@ function LinkEntry(id){
         }catch(e){
             alert(e);
         }
-    }
+    };
 
     this.initEffects = function(){
         //if(!operafix)
@@ -236,10 +236,10 @@ function LinkEntry(id){
 
         $(this.elements.remove).click(function(){
             $.get( "{{'/json/abort_link/'|url}}"+id)});
-    }
+    };
     this.update = function(item){
-            $(this.elements.name).text( item.name);
-            $(this.elements.hoster).text( item.plugin);
+            $(this.elements.name).text(item.name);
+            $(this.elements.hoster).text(item.plugin);
             $(this.elements.statusspan).text(item.statusmsg);
             $(this.elements.info).text(item.info);
             $(this.elements.bleft).text(item.format_size);
@@ -247,7 +247,7 @@ function LinkEntry(id){
             $(this.elements.statusspan).removeClass().addClass('label '+labelcolor(item.status) + ' lbl_status');
             $(this.elements.pgb).css('width',item.percent+'%').animate({duration:'slow'});
 
-    }
+    };
     this.remove = function(){
         $(this.fade).fadeOut("slow",function(){
             this.remove();
@@ -255,7 +255,7 @@ function LinkEntry(id){
         $(this.fadeBar).fadeOut("slow",function(){
             this.remove();
         });
-    }
+    };
     this.initialize(id);
 }
 

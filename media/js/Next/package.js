@@ -141,7 +141,7 @@ function Package (ui, id, ele){
             $(li).css("margin-left",0);
 
             if (link.status === 0){
-                    link.icon = 'glyphicon glyphicon-ok text-success';
+                link.icon = 'glyphicon glyphicon-ok text-success';
             }else if (link.status === 2 || link.status === 3){
                     link.icon = 'glyphicon glyphicon-time text-info';
             }else if (link.status ===  9 || link.status === 1){
@@ -163,8 +163,8 @@ function Package (ui, id, ele){
                        "<span class='child_status' style='font-size: 12px; color:#555'>" + link.statusmsg + "</span>&nbsp;" + link.error + "&nbsp;" +
                        "<span class='child_status' style='font-size: 12px; color:#555'>" + link.format_size + "</span>" +
                        "<span class='child_status' style='font-size: 12px; color:#555'> " + link.plugin + "</span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
+                       "<span class='glyphicon glyphicon-trash' title='{{_('Delete Link')}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;" +
+                       "<span class='glyphicon glyphicon-repeat' title='{{_('Restart Link')}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
 
             var div = document.createElement("div");
             $(div).attr("id","file_" + link.id);
@@ -201,7 +201,7 @@ function Package (ui, id, ele){
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
-                    $(spans[1]).html("{{_("queued")}}");
+                    $(spans[1]).html("{{_('queued')}}");
                     indicateSuccess();
                 }).fail(indicateFail);
             });

@@ -14,15 +14,15 @@ $(function() {
                 data: $("#password_form").serialize(),
                 async: true,
                 success: function () {
-                    indicateSuccess('{{ _("Settings saved")}}');
+                    indicateSuccess("{{_('Settings saved')}}");
                 }
             })
             .fail(function() {
-                indicateFail('{{ _("Error occurred")}}');
+                indicateFail("{{_('Error occurred')}}");
             });
             $('#password_box').modal('hide');
         } else {
-            alert('{{_("Passwords did not match.")}}')
+            alert("{{_('Passwords did not match.')}}")
         }
         j.stopPropagation();
         j.preventDefault();
@@ -37,13 +37,19 @@ $(function() {
     $("#quit_box").on('click', '#quit_button', function () {
         $.get( "{{'/api/kill'|url}}", function() {
             $('#quit_box').modal('hide');
+            $('#content').addClass("hidden");
+            $('#shutdown_msg').removeClass("hidden");
         });
     });
 
     $("#restart_box").on('click', '#restart_button', function () {
         $.get( "{{'/api/restart'|url}}", function() {
-            alert("{{_('pyLoad restarted')}}");
             $('#restart_box').modal('hide');
+            $('#content').addClass("hidden");
+            $('#restart_msg').removeClass("hidden");
+            setTimeout(function() {
+                window.location = "{{'/home'|url}}";
+            }, 10000);
         });
     });
 }); 

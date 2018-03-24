@@ -123,6 +123,13 @@ hr {
   user-select: none;
 }
 
+.modal-dialog {
+    display: flex;
+    width: initial;
+    justify-content: center;
+}
+
+.modal-backdrop.in { z-index: auto;}
 
 .text-ellipsis {
   width: 100%;
@@ -144,4 +151,20 @@ hr {
 .btn[disabled],
 fieldset[disabled] .btn {
   pointer-events: auto;
+}
+
+iframe#interactiveCaptchaIframeId
+{
+  position:relative;
+  width:465px;
+  height:597px;
+  border: 0px solid black;
+}
+div#cap_interactive
+{
+  overflow:hidden;
+  width:465px;
+  height:597px;
+  border: 0px solid black;
+  display:none;
 }

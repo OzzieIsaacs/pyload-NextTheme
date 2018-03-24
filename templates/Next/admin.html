@@ -36,16 +36,16 @@
 
             {% for name, data in users.iteritems() %}
                 <tr>
-                    <td>{{ name }}</td>
+                    <td>{{name}}</td>
                     <td><div class="change_password btn btn-default btn-xs" data-toggle="modal" data-target="#password_box" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{ _("change") }}</div></td>
-                    <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}></td>
+                    <td><input name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}></td>
                     <td>
-                        <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
+                        <select multiple="multiple" size="{{permlist|length}}" name="{{name}}|perms">
                             {% for perm in permlist %}
                             {% if data.perms|getitem(perm) %}
-                                <option selected="selected">{{ perm }}</option>
+                                <option selected="selected">{{perm}}</option>
                             {% else %}
-                                <option>{{ perm }}</option>
+                                <option>{{perm}}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
@@ -56,10 +56,23 @@
 
         </table>
 
-        <button class="btn btn-primary" type="submit">{{ _("Submit") }}</button>
+        <button class="btn btn-primary" type="submit">{{_("Submit")}}</button>
     </form>
 {% endblock %}
+
 {% block dialog %}
+<div id="restart_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad is restarting...')}}</p>
+  </div>
+</div>
+
+<div id="shutdown_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad was shut down, goodbye!')}}</p>
+  </div>
+</div>
+
 <div id="restart_box" class="modal" role="dialog">
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
@@ -92,12 +105,12 @@
     <div class="modal-content">
       <div class="modal-header bg-info text-center" style="padding: 5px;" >{{ _("Change Password") }}</div>
         <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="password_form" class="from-group" action="{{ "/json/change_password"|url }}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
-          <p>{{ _("Enter your current and desired Password.") }}</p>
+        <form id="password_form" class="from-group" action="{{'/json/change_password'|url}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_('Enter your current and desired Password.')}}</p>
           <div class="form-group">
-            <label for="user_login">{{ _("User") }}</label>
+            <label for="user_login">{{_('User')}}</label>
             <input class="form-control" id="user_login" name="user_login" type="text"/>
-            <p class="help-block">{{ _("Your username.") }}</p>
+            <p class="help-block">{{_("Your username.")}}</p>
           </div>
           <div class="form-group">
               <label for="login_current_password">{{ _("Current password") }}</label>
@@ -112,7 +125,7 @@
           <div class="form-group">
                 <label for="login_new_password2">{{ _("New password (repeat)") }}</label>
                 <input class="form-control" id="login_new_password2" name="login_new_password2" type="password" />
-                <p class="help-block">{{ _("Please repeat the new password.") }}</p>
+                <p class="help-block">{{_('Please repeat the new password.')}}</p>
           </div>
           <button class="btn btn-primary" id="login_password_button" type="submit" style="float: right">{{ _("Submit") }}</button>
           <button class="btn btn-default" id="login_password_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
@@ -121,5 +134,4 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
