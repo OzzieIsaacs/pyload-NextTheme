@@ -221,7 +221,7 @@ $(function() {
                     method: "POST",
                     data: form,
                     processData: false,
-                    contentType: false,
+                    contentType: false
             });
             $('#add_box').modal('hide');
             var queue = form.get("add_dest") === "1" ? "queue" : "collector";

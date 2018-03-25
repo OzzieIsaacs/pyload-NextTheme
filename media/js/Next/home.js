@@ -170,7 +170,7 @@ function LinkEntry(id){
             $(pgbTr).css('border-top-color','#fff');
             var progress= document.createElement("div");
             $(progress).html('');
-            $(progress).addClass('progressani aqua');
+            $(progress).addClass('progress progressani aqua');
             $(progress).css('margin-bottom','0px');
             $(progress).css('margin-left', '4px');
             var pgb= document.createElement("div");
