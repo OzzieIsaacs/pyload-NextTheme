@@ -139,18 +139,11 @@ fieldset[disabled] .btn {
   pointer-events: auto;
 }
 
-iframe#interactiveCaptchaIframeId
-{
-  position:relative;
-  width:465px;
-  height:597px;
-  border: 0px solid black;
-}
-div#cap_interactive
-{
-  overflow:hidden;
-  width:465px;
-  height:597px;
-  border: 0px solid black;
-  display:none;
+.peek-a-bar {
+  margin: 0;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  text-align: center
 }
