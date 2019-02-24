@@ -1,76 +1,121 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <script class="javascript">
-        function chosen()
-        {
-            opener.ifield.value = document.forms[0].p.value;
-            close();
-        }
-        function exit()
-        {
-            close();
-        }
-        function setInvalid() {
-            document.forms[0].send.disabled = 'disabled';
-            document.forms[0].p.style.color = '#FF0000';
-        }
-        function setValid() {
-            document.forms[0].send.disabled = '';
-            document.forms[0].p.style.color = '#000000';
-        }
-        function setFile(file)
-        {
-            document.forms[0].p.value = file;
-            setValid();
-
-        }
-    </script>
-    <link rel="stylesheet" type="text/css" href="{{ '/media/Next/css/pathchooser.css'|url}}"/>
-</head>
-<body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
-<center>
-    <div id="paths">
-    <form method="get" action="?" onSubmit="chosen();" onReset="exit();">
-        <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
-        <input type="submit" value="Ok" name="send">
-    </form>
-
-    {% if type == 'folder' %}
-    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser"|url + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/"|url + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+  <script class="javascript">
+    var submit = true;
+    {% if absolute %}
+      var cwd = "{{oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var isabsolute = true;
     {% else %}
-    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/filechooser/"|url + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/filechooser/"|url + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+      var cwd = "{{oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+      var isabsolute = false;
     {% endif %}
-    </div>
-    <table border="0" cellspacing="0" cellpadding="3">
-        <tr>
-            <th>{{_("name")}}</th>
-            <th>{{_("size")}}</th>
-            <th>{{_("type")}}</th>
-            <th>{{_("last modified")}}</th>
-        </tr>
+
+    {% if type == 'folder' %} {# browsing for folder #}
+      var abspath = "{{'/pathchooser/'|url + cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "{{'/pathchooser/'|url + cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+    {% else %} {# browsing for file #}
+      var abspath = "{{'/filechooser/'|url + oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "{{'/filechooser/'|url + oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+    {% endif %}
+    document.addEventListener("readystatechange", function(event) {
+      if (this.readyState === "complete") {
+        document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
+        window.onresize = function (event) {
+          document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
+        };
+        var clickables = document.getElementsByClassName("tr-clickable");
+        for (var i = 0; i < clickables.length; i++) {
+          clickables[i].onclick = (function () {
+            var onclick = clickables[i].onclick;
+            return function (e) {
+              if (onclick != null && !onclick()) {
+                  return false
+              }
+              if (this.dataset.href !== undefined && this.dataset.href !== "#") {
+                  window.location.href = this.dataset.href;
+                  return false
+              } else {
+                  return true;
+              }
+            }
+          })();
+        }
+      }
+    });
+    function updateParent()
+    {
+        if (window.top.SettingsUI != undefined) {
+            window.top.SettingsUI.prototype.pathchooserChanged(this);
+        }
+    }
+    function setInvalid() {
+        submit = false;
+        cwd = "";
+        updateParent();
+    }
+    function setValid() {
+        submit = true;
+        updateParent();
+    }
+    function setFile(fullpath, name)
+    {
+        cwd = fullpath;
+        {% if type == "file" %} {# browsing for file #}
+          abspath = "{{'/filechooser/'|url + cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}" + name;
+          relpath = "{{'/filechooser/'|url + cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}" + name;
+        {% endif %}
+        setValid();
+    }
+  </script>
+  <link rel="stylesheet" type="text/css" href="{{'/media/Next/css/pathchooser.css'|url}}"/>
+</head>
+<body {% if type == 'file' %}{% if oldfile %}onload="updateParent();"{% else %}onload="setInvalid();"{% endif %}{% else %}onload="updateParent();"{% endif %}>
+ <table>
+    <thead>
+      <tr>
+          <th>{{_('name')}}</th>
+          <th>{{_('size')}}</th>
+          <th>{{_('type')}}</th>
+          <th>{{_('last modified')}}</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
     {% if parentdir %}
-        <tr>
-            <td colspan="4">
-                <a href="{% if type == 'folder' %}{{ "/pathchooser/"|url + parentdir|quotepath }}{% else %}{{ "/filechooser/"|url + parentdir|quotepath }}{% endif %}"><span class="parentdir">{{_("parent directory")}}</span></a>
-            </td>
+        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{'/pathchooser/'|url + (parentdir|quotepath)}}{% else %}{{'/filechooser/' + parentdir|quotepath}}{% endif %}">
+          <td title="{{_('Parent Directory')}}"><span class="parentdir">..</span></td>
+          <td></td>
+          <td colspan="2">&lt;DIR&gt;</td>
         </tr>
     {% endif %}
-{% for file in files %}
-        <tr>
-            {% if type == 'folder' %}
-                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/pathchooser/"|url + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<span class="path_file" title="{{ file.fullpath }}">{{ file.name|truncate(25) }}{% endif %}</span></td>
-            {% else %}
-                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/filechooser/"|url + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
+    {% for file in files %}
+            {% if type == 'folder' %} {# browsing for folder #}
+                  {% if file.type == 'dir' %}
+                    <tr class="tr-clickable" data-href="{{'/pathchooser/'|url + file.fullpath|quotepath}}" title="{{file.name}}">
+                      <td class="name path_directory text-ellipsis">{{file.name}}</td>
+                  {% else %}
+                    <tr class="tr-nonclickable" title="{{file.fullpath}}">
+                      <td class="name path_file text-ellipsis">{{file.name}}</td>
+                  {% endif %}
+            {% else %} {# browsing for file #}
+                  {% if file.type == 'dir' %}
+                   <tr class="tr-clickable" data-href="{{'/filechooser/'|url + file.fullpath|quotepath}}" title="{{file.fullpath}}">
+                    <td class="name file_directory text-ellipsis">{{file.name}}</td>
+                  {% else %}
+                   <tr class="tr-clickable" title="{{file.fullpath}}" onclick="setFile('{{file.fullpath|replace("\\", "\\\\")}}', '{{file.name}}');">
+                    <td class="name file_file text-ellipsis">{{file.name}}</td>
+                  {% endif %}
             {% endif %}
-            <td class="size">{{ file.size|float|filesizeformat }}</td>
-            <td class="type">{% if file.type == 'dir' %}directory{% else %}{{ file.ext|default("file") }}{% endif %}</td>
-            <td class="mtime">{{ file.modified|date("d.m.Y - H:i:s") }}</td>
-        <tr>
-<!--        <tr>
-            <td colspan="4">{{_("no content")}}</td>
-        </tr> -->
-{% endfor %}
-    </table>
-    </center>
-</body>
+
+            <td class="size">{% if file.type == 'file' %}
+              {% if file.unit == 'Byte' %}1 KB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
+              {% endif %}</td>
+            <td class="type">{% if file.type == 'dir' %}&lt;DIR&gt;{% else %}{{file.ext|default('file', True)}}{% endif %}</td>
+            <td class="mtime">{{file.modified|date('d.m.Y - H:i:s')}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </body>
 </html>
